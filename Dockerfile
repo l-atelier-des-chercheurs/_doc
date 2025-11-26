@@ -19,7 +19,9 @@ FROM build-base AS build-server
 ENV NODE_ENV=production
 
 # Install server dependencies
+USER node
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
+RUN chown -R node:node ./
 COPY package*.json ./
 RUN npm ci --only=production
 
