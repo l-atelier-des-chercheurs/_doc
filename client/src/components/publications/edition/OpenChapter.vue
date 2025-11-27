@@ -128,44 +128,11 @@
         </transition>
       </div>
 
-      <fieldset
-        v-if="chapter.section_type === 'text' && view_mode === 'book'"
-        class="u-spacingBottom _layout"
-      >
-        <legend>{{ $t("layout") }}</legend>
-        <div class="_optionsRow">
-          <div class="_colCount">
-            <DLabel :str="$t('column_count')" />
-            <div class="">
-              <SelectField2
-                :field_name="'column_count'"
-                :value="chapter.column_count || 1"
-                :path="chapter.$path"
-                size="small"
-                :hide_validation="true"
-                :can_edit="true"
-                :options="[
-                  { key: 1, text: '1' },
-                  { key: 2, text: '2' },
-                  { key: 3, text: '3' },
-                ]"
-              />
-            </div>
-          </div>
-          <div class="_selects--starts_on_page">
-            <DLabel :str="$t('starts_on_page')" />
-            <SelectField2
-              :field_name="'section_starts_on_page'"
-              :value="chapter.section_starts_on_page || ''"
-              :path="chapter.$path"
-              size="small"
-              :hide_validation="true"
-              :can_edit="true"
-              :options="starts_on_page_options"
-            />
-          </div>
-        </div>
-      </fieldset>
+      <ChapterLayout
+        :chapter="chapter"
+        :publication="publication"
+        :view_mode="view_mode"
+      />
 
       <div class="_content">
         <template v-if="chapter.section_type === 'text'">
@@ -231,6 +198,7 @@ import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 import PickMediaForMarkdown from "@/components/publications/edition/PickMediaForMarkdown.vue";
 import GalleryChapter from "@/components/publications/edition/GalleryChapter.vue";
 import GridChapter from "@/components/publications/edition/GridChapter.vue";
+import ChapterLayout from "@/components/publications/edition/ChapterLayout.vue";
 
 export default {
   props: {
@@ -247,6 +215,7 @@ export default {
     PickMediaForMarkdown,
     GalleryChapter,
     GridChapter,
+    ChapterLayout,
     SingleSection: () =>
       import("@/components/publications/story/SingleSection.vue"),
   },
@@ -281,42 +250,6 @@ export default {
     },
     main_text_content() {
       return this.chapter._main_text?.$content;
-    },
-    starts_on_page_options() {
-      if (this.chapter.section_type === "gallery")
-        return [
-          {
-            key: "page",
-            text: this.$t("next_page"),
-          },
-          {
-            key: "left",
-            text: this.$t("next_left_page"),
-          },
-          {
-            key: "right",
-            text: this.$t("next_right_page"),
-          },
-        ];
-      else
-        return [
-          {
-            key: "",
-            text: this.$t("in_flow"),
-          },
-          {
-            key: "page",
-            text: this.$t("next_page"),
-          },
-          {
-            key: "left",
-            text: this.$t("next_left_page"),
-          },
-          {
-            key: "right",
-            text: this.$t("next_right_page"),
-          },
-        ];
     },
   },
   methods: {
@@ -593,15 +526,6 @@ export default {
   gap: calc(var(--spacing) * 1);
 }
 
-._selects--starts_on_page {
-  width: 30ch;
-  // width: auto;
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 2;
-  // margin-bottom: calc(var(--spacing) * 1);
-}
-
 ._selects--pageRange {
   // font-size: var(--sl-font-size);
   color: var(--c-gris_fonce);
@@ -617,16 +541,5 @@ export default {
       display: none;
     }
   }
-}
-
-._colCount {
-  max-width: 20ch;
-}
-
-._optionsRow {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: flex-start;
-  gap: calc(var(--spacing) * 1);
 }
 </style>
