@@ -15,23 +15,23 @@
         />
       </div> -->
 
-      <transition name="pagechange" mode="out-in">
-        <div :key="selected_destination_folder_path" class="_stackPickerFrame">
-          <SharedFolder2
-            :shared_folder_path="selected_destination_folder_path"
-            :select_mode="select_mode"
-            :read_only="true"
-            @changeCorpus="changeCorpus"
-            @selectMedias="$emit('mediasSelected', $event)"
-            @selectStack="$emit('stackSelected', $event)"
-          />
-        </div>
-      </transition>
+      <div class="_stackPickerFrame">
+        <CorpusManager
+          :shared_folder_paths="shared_folder_paths"
+          :select_mode="select_mode"
+          :read_only="true"
+          :use_query="false"
+          @communitiesSelected="onCommunitiesSelected"
+          @selectStack="$emit('stackSelected', $event)"
+          @selectMedias="$emit('mediasSelected', $event)"
+        />
+      </div>
     </div>
   </BaseModal2>
 </template>
 <script>
 import DestinationCorpusSelector from "@/components/DestinationCorpusSelector.vue";
+import CorpusManager from "@/components/archive/CorpusManager.vue";
 
 export default {
   props: {
@@ -43,12 +43,19 @@ export default {
   },
   components: {
     DestinationCorpusSelector,
-    SharedFolder2: () => import("@/components/archive/SharedFolder2.vue"),
+    CorpusManager,
   },
   data() {
     return {
-      selected_destination_folder_path: undefined,
+      shared_folder_paths: [],
     };
+  },
+  computed: {},
+  methods: {
+    onCommunitiesSelected(selected_folders) {
+      // When communities are selected, update the shared_folder_paths
+      this.shared_folder_paths = selected_folders;
+    },
   },
   i18n: {
     messages: {
@@ -60,16 +67,6 @@ export default {
         pick_existing_mediastack: "Pick document",
         corpus: "Corpus",
       },
-    },
-  },
-  created() {},
-  mounted() {},
-  beforeDestroy() {},
-  watch: {},
-  computed: {},
-  methods: {
-    changeCorpus(path) {
-      this.selected_destination_folder_path = path;
     },
   },
 };

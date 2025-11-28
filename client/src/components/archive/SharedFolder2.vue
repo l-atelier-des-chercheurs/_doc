@@ -2,20 +2,25 @@
   <div class="_sharedFolder">
     <div class="_topBar">
       <div class="_communautesSection">
-        <DLabel :str="$t('Communautés actives')" class="_communautesLabel" />
+        <DLabel :str="$t('all_communities')" class="_communautesLabel" />
         <div class="_corpusItems">
           <div
-            v-for="folder_path in active_folder_paths"
-            :key="folder_path"
+            v-for="folder in all_folders"
+            :key="folder.$path"
             class="_corpusItem"
+            :class="{ 'is--active': isCommunityActive(folder.$path) }"
           >
             <button
               type="button"
               class="u-button u-button_pill"
-              @click="toggleCorpus(folder_path)"
+              :class="{ 'is--active': isCommunityActive(folder.$path) }"
+              @click="toggleCorpus(folder.$path)"
             >
-              {{ getFolderTitle(folder_path) }}
-              <b-icon icon="x" class="_closeIcon" />
+              {{ folder.title || $t("untitled") }}
+              <b-icon
+                :icon="isCommunityActive(folder.$path) ? 'x' : 'plus'"
+                class="_toggleIcon"
+              />
             </button>
           </div>
         </div>
@@ -675,23 +680,23 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-}
 
-._corpusItemButton {
-  ._corpusItem.is--active & {
-    background: var(--active-color);
-    color: white;
-    border-color: var(--active-color);
+  &.is--active {
+    .u-button {
+      background: var(--active-color);
+      color: white;
+      border-color: var(--active-color);
+    }
   }
 }
 
-._closeIcon {
+._toggleIcon {
   margin-left: calc(var(--spacing) / 4);
   font-size: 0.75em;
   opacity: 0.7;
   transition: opacity 0.2s ease;
 
-  ._corpusItemButton:hover & {
+  .u-button:hover & {
     opacity: 1;
   }
 }

@@ -1377,7 +1377,14 @@ export default {
   add_community: "Add community",
   no_more_communities: "No more communities available",
   see_all_communities: "See all communities",
-  all_communities: "All communities",
+  all_communities: "Communities",
   no_communities_available: "No communities available",
   already_selected: "Already selected",
+  edit_community: "Edit community",
+  remove_community: "Remove community",
+  remove_community_explanation:
+    "Are you sure you want to remove this community? This action cannot be undone.",
+  community_updated_successfully: "Community updated successfully",
+  community_removed_successfully: "Community removed successfully",
+  error_updating_community: "Error updating community",
 };
