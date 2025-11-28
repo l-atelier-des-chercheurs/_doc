@@ -43,31 +43,20 @@
         >
           <MediaContent :file="slide_file" class="_mediaPreview" />
         </div>
-        <!-- <transition name="fade_fast" mode="out-in">
+        <transition name="fade_fast" mode="out-in">
           <div
             class="_count"
-            v-if="
-              index_of_slide_file_to_show !== undefined &&
-              number_of_medias_in_stack > 0
-            "
-          ></div>
-        </transition> -->
-        <!-- <transition-group name="projectsList" class="_count">
-          <template
-            v-if="
-              index_of_slide_file_to_show !== undefined &&
-              number_of_medias_in_stack > 0
-            "
+            v-if="start_slide && number_of_medias_in_stack > 0"
           >
-            <div key="slide">
-              {{ index_of_slide_file_to_show + 1 }}
-            </div>
-            <div key="slash">/</div>
-          </template>
-          <div key="preview">
-            {{ number_of_medias_in_stack }}
+            <template v-if="index_of_slide_file_to_show !== undefined">
+              {{ index_of_slide_file_to_show + 1 }} /
+              {{ number_of_medias_in_stack }}
+            </template>
+            <template v-else>
+              {{ number_of_medias_in_stack }}
+            </template>
           </div>
-        </transition-group> -->
+        </transition>
       </div>
       <div class="_title" v-if="display !== 'compact'">
         {{ stack.title }}
@@ -329,22 +318,18 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) / 8);
-  align-content: center;
+  align-items: center;
+  justify-content: center;
   bottom: 0;
   left: 0;
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
-
-  margin: 0;
-  margin: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   font-weight: 400;
-  background: white;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
   line-height: 1;
-
-  > * {
-    // background: white;
-  }
+  font-size: 0.75rem;
+  border-radius: 2px;
+  margin: calc(var(--spacing) / 4);
 }
 
 ._mainPreview {
