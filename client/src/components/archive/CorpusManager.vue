@@ -1,6 +1,5 @@
 <template>
   <div class="_corpusManager">
-    <!-- Selection view: show when no communities are selected -->
     <div v-if="!hasSelectedCommunities" class="_selectionView">
       <div class="_header">
         <h1 class="_title">{{ $t("Communautés") }}</h1>
@@ -17,45 +16,16 @@
         </div>
       </div>
       <div class="_communitiesList">
-        <div
+        <CommunityPreview
           v-for="folder in displayed_folders"
           :key="folder.$path"
-          class="_communityItem"
-        >
-          <input
-            type="checkbox"
-            :id="folder.$path"
-            :value="folder.$path"
-            v-model="selected_folders"
-            class="_checkbox"
-          />
-          <label :for="folder.$path" class="_label">
-            <div class="_communityTitle">
-              {{ folder.title || $t("untitled") }}
-            </div>
-            <div v-if="folder.description" class="_communityDescription">
-              {{ folder.description }}
-            </div>
-          </label>
-          <div class="_communityActions">
-            <button
-              type="button"
-              class="u-button u-button_icon u-button_transparent _editButton"
-              @click.stop="editCommunity(folder)"
-              :title="$t('edit')"
-            >
-              <b-icon icon="pencil" />
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_icon u-button_transparent _removeButton"
-              @click.stop="showRemoveModal(folder)"
-              :title="$t('remove')"
-            >
-              <b-icon icon="trash" />
-            </button>
-          </div>
-        </div>
+          :folder="folder"
+          :can_edit="canEditCommunity(folder)"
+          :can_see="canSeeCommunity(folder)"
+          :is_selected="selected_folders.includes(folder.$path)"
+          @select="handleSelect"
+          @remove="showRemoveModal"
+        />
         <div v-if="displayed_folders.length === 0" class="_noCommunities">
           {{ $t("no_communities_available") }}
         </div>
@@ -112,41 +82,6 @@
       </div>
     </BaseModal2>
 
-    <!-- Edit Community Modal -->
-    <BaseModal2
-      v-if="editing_community"
-      :title="$t('edit_community')"
-      @close="cancelEdit"
-    >
-      <div class="_editCommunityForm">
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('title')" />
-          <TextInput
-            v-model="edit_title"
-            :input_type="'text'"
-            :required="true"
-            :maxlength="100"
-            :autofocus="true"
-          />
-        </div>
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('description')" />
-          <TextInput
-            v-model="edit_description"
-            :input_type="'text'"
-            :maxlength="500"
-          />
-        </div>
-        <SaveCancelButtons
-          slot="footer"
-          :is_saving="is_saving"
-          :allow_save="edit_title && edit_title.length > 0"
-          @save="saveEdit"
-          @cancel="cancelEdit"
-        />
-      </div>
-    </BaseModal2>
-
     <!-- Remove Community Modal -->
     <RemoveMenu2
       v-if="community_to_remove"
@@ -161,6 +96,7 @@
 </template>
 <script>
 import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
+import CommunityPreview from "@/components/archive/CommunityPreview.vue";
 
 export default {
   props: {
@@ -183,16 +119,13 @@ export default {
   },
   components: {
     SharedFolder2,
+    CommunityPreview,
   },
   data() {
     return {
       all_folders: [],
       selected_folders: [],
       show_add_community: false,
-      editing_community: null,
-      edit_title: "",
-      edit_description: "",
-      is_saving: false,
       community_to_remove: null,
     };
   },
@@ -200,6 +133,7 @@ export default {
   async mounted() {
     // Load all available communities
     this.all_folders = await this.$api.getFolders({ path: "folders" });
+    this.$api.join({ room: "folders" });
 
     // Initialize selected folders
     if (this.use_query) {
@@ -339,6 +273,23 @@ export default {
         this.$emit("communitiesSelected", this.selected_folders);
       }
     },
+    canEditCommunity(folder) {
+      return this.canLoggedinEditFolder({ folder: folder });
+    },
+    canSeeCommunity(folder) {
+      return this.canLoggedinSeeFolder({ folder: folder });
+    },
+    handleSelect(folder_path, is_selected) {
+      if (is_selected) {
+        if (!this.selected_folders.includes(folder_path)) {
+          this.selected_folders.push(folder_path);
+        }
+      } else {
+        this.selected_folders = this.selected_folders.filter(
+          (f) => f !== folder_path
+        );
+      }
+    },
     toggleCorpus(path) {
       if (this.use_query) {
         // Toggle via route query
@@ -400,52 +351,6 @@ export default {
         // Emit event for local state management
         this.$emit("communitiesSelected", this.selected_folders);
       }
-    },
-    editCommunity(folder) {
-      this.editing_community = folder;
-      this.edit_title = folder.title || "";
-      this.edit_description = folder.description || "";
-    },
-    async saveEdit() {
-      if (!this.editing_community || !this.edit_title) return;
-
-      this.is_saving = true;
-      try {
-        await this.$api.updateMeta({
-          path: this.editing_community.$path,
-          new_meta: {
-            title: this.edit_title,
-            description: this.edit_description,
-          },
-        });
-
-        // Update local folder data
-        const folder = this.all_folders.find(
-          (f) => f.$path === this.editing_community.$path
-        );
-        if (folder) {
-          folder.title = this.edit_title;
-          folder.description = this.edit_description;
-        }
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(this.$t("community_updated_successfully"));
-
-        this.cancelEdit();
-      } catch (error) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("error_updating_community"));
-      }
-      this.is_saving = false;
-    },
-    cancelEdit() {
-      this.editing_community = null;
-      this.edit_title = "";
-      this.edit_description = "";
     },
     showRemoveModal(folder) {
       this.community_to_remove = folder;
@@ -527,7 +432,7 @@ export default {
 
 ._selectionView {
   padding: calc(var(--spacing) * 2);
-  max-width: 800px;
+  // max-width: 800px;
   margin: 0 auto;
   width: 100%;
 }
@@ -562,68 +467,10 @@ export default {
 }
 
 ._communitiesList {
-  display: flex;
-  flex-flow: column nowrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: calc(var(--spacing) / 2);
   margin-bottom: calc(var(--spacing) * 2);
-}
-
-._communityItem {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: flex-start;
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2);
-  border: 1px solid var(--h-300);
-  border-radius: 4px;
-  background: var(--body-bg);
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: var(--h-400);
-    background: var(--h-100);
-  }
-}
-
-._checkbox {
-  flex: 0 0 auto;
-  margin-top: calc(var(--spacing) / 4);
-}
-
-._label {
-  flex: 1 1 auto;
-  cursor: pointer;
-  display: flex;
-  flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 4);
-}
-
-._communityTitle {
-  font-weight: 500;
-  font-size: var(--sl-font-size-medium);
-}
-
-._communityDescription {
-  font-size: var(--sl-font-size-small);
-  color: var(--h-600);
-}
-
-._communityActions {
-  display: flex;
-  flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 4);
-  align-items: center;
-  flex: 0 0 auto;
-}
-
-._editButton,
-._removeButton {
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 1;
-  }
 }
 
 ._actions {
@@ -664,11 +511,5 @@ export default {
   text-align: center;
   color: var(--h-600);
   font-style: italic;
-}
-
-._editCommunityForm {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: calc(var(--spacing));
 }
 </style>
