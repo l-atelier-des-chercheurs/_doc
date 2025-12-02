@@ -219,6 +219,8 @@ export default {
           _chapter.content = this.parseGallery(chapter.source_medias);
         } else if (chapter.section_type === "story") {
           _chapter.content = this.parseStory(chapter);
+        } else if (chapter.section_type === "grid") {
+          _chapter.content = this.parseGrid(chapter);
         }
 
         nodes.chapters.push(_chapter);
@@ -320,11 +322,18 @@ export default {
     },
 
     parseMarkdownWithMarkedownIt(content, source_medias) {
+      // Preprocess content to handle multiple line breaks
+      // Convert multiple consecutive newlines to HTML breaks
+      // content = content.replace(/\n{3,}/g, (match) => {
+      //   const breakCount = match.length - 2; // Keep one paragraph break, add extra <br> tags
+      //   return "\n\n" + "<br>\n".repeat(breakCount);
+      // });
+
       const md = markdownit({
         breaks: true,
         linkify: true,
         typographer: true,
-        html: false,
+        html: true,
         highlight: function (str, lang) {
           if (lang && hljs.getLanguage(lang)) {
             try {
@@ -391,7 +400,9 @@ export default {
       });
 
       const result = md.render(content);
-      return result;
+      const sanitized_result = this.$sanitize(result);
+
+      return sanitized_result;
     },
     parseGallery(source_medias) {
       if (!source_medias || source_medias.length === 0)
@@ -400,9 +411,9 @@ export default {
         )}</i></div>`;
 
       const medias = source_medias
-        .map((media) => {
+        .map((source_media) => {
           return this.getSourceMedia({
-            source_media: media,
+            source_media,
             folder_path: this.publication.$path,
           });
         })
@@ -429,7 +440,7 @@ export default {
         section: chapter,
       }).map(({ _module }) => _module);
 
-      let html = "";
+      let md_string = "";
 
       pmodules.forEach((pmodule) => {
         // parse source medias
@@ -445,17 +456,64 @@ export default {
           .filter(Boolean);
 
         medias.forEach((media) => {
-          const { html: _html } = this.renderMedia({
-            media,
-            alt: pmodule.caption,
-            width: pmodule.width,
-            height: pmodule.height,
-            title: pmodule.title,
-          });
+          const meta_filename = this.getFilename(media.$path);
 
-          html += _html;
+          if (media.$type === "text") {
+            // SOUCIS : le HTML n'est pas géré ni dans quill ni dans markdownIt. Donc ça rends du texte brut.
+            md_string += media.$content;
+          } else if (media.$type === "image") {
+            md_string += `(image: ${meta_filename})`;
+          } else if (media.$type === "video") {
+            md_string += `(video: ${meta_filename})`;
+          } else if (media.$type === "audio") {
+            md_string += `(audio: ${meta_filename})`;
+          } else if (media.$type === "embed") {
+            md_string += `(embed: ${meta_filename})`;
+          }
         });
+
+        md_string += "\n\n";
       });
+
+      const html = this.parseMarkdownWithMarkedownIt(
+        md_string,
+        chapter.source_medias
+      );
+
+      return html;
+    },
+
+    parseGrid(chapter) {
+      if (!chapter.grid_areas || chapter.grid_areas.length === 0)
+        return `<div class="grid"><i>${this.$t("no_areas_defined")}</i></div>`;
+
+      // Use row_count and column_count from chapter
+      const col_count = chapter.column_count || 6;
+      const row_count = chapter.row_count || 6;
+
+      let html = `<div class="grid"><div class="grid-content" style="--col-count: ${col_count}; --row-count: ${row_count};">`;
+
+      chapter.grid_areas.forEach((area) => {
+        const text_meta = this.publication.$files.find(
+          (f) => f.grid_area_id === area.id
+        );
+
+        if (text_meta && text_meta.$content) {
+          const text = this.parseMarkdownWithMarkedownIt(
+            text_meta.$content,
+            text_meta.source_medias
+          );
+
+          html += `<div class="grid-cell" style="grid-column-start: ${area.column_start}; grid-column-end: ${area.column_end}; grid-row-start: ${area.row_start}; grid-row-end: ${area.row_end};">
+            ${text}
+          </div>`;
+        } else {
+          // Empty cell with grid positioning
+          html += `<div class="grid-cell" style="grid-column-start: ${area.column_start}; grid-column-end: ${area.column_end}; grid-row-start: ${area.row_start}; grid-row-end: ${area.row_end};"></div>`;
+        }
+      });
+
+      html += "</div></div>";
 
       return html;
     },
@@ -603,9 +661,16 @@ export default {
         media_html += `<figcaption class="mediaCaption"><span>${alt}</span></figcaption>`;
       }
 
+      let style_attr = "";
+      if (width || height) {
+        const _width = width ? `width: ${width};` : "";
+        const _height = height ? `height: ${height};` : "";
+        style_attr = ` style="${_width}${_height}"`;
+      }
+
       const html = `<figure class="${custom_classes.join(
         " "
-      )}">${media_html}</figure>`;
+      )}"${style_attr}>${media_html}</figure>`;
 
       return { html, is_qr_code };
     },

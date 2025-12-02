@@ -5,7 +5,7 @@ module.exports = (function () {
 
       try {
         if (global.is_electron) {
-          const electron = require("./electron");
+          const electron = require("../electron/electron");
           await electron.captureScreenshot({ url, full_path_to_thumb });
         } else {
           const puppeteer = require("./puppeteer");
@@ -23,11 +23,13 @@ module.exports = (function () {
       document_width,
       document_height,
       reportProgress,
+      number_of_pages_to_export,
     }) => {
       dev.logfunction({
         url,
         recipe,
         layout_mode,
+        number_of_pages_to_export,
         document_width,
         document_height,
         reportProgress,
@@ -48,12 +50,13 @@ module.exports = (function () {
       };
 
       if (global.is_electron) {
-        const electron = require("./electron");
+        const electron = require("../electron/electron");
         return await electron.exportToPDFOrImage({
           url,
           recipe,
           bw_pagesize,
           printToPDF_pagesize,
+          number_of_pages_to_export,
           reportProgress,
         });
       } else {
@@ -64,6 +67,7 @@ module.exports = (function () {
           recipe,
           bw_pagesize,
           printToPDF_pagesize,
+          number_of_pages_to_export,
           reportProgress,
         });
       }

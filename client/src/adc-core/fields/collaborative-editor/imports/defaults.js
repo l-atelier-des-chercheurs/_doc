@@ -16,10 +16,12 @@ export const fonts = [
   "IBM Plex Sans",
   "IBM Plex Mono",
   "Raleway",
+  "Rubik",
   "Volkhov",
   "Archivo",
   "Spectral",
   "Krub",
+  "Faune",
 ];
 
 export const fontSizeArr = [

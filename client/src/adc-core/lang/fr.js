@@ -27,6 +27,27 @@ export default {
   save: "Enregistrer",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
+  image_url: "URL vers une image",
+  image_url_instr:
+    "Indiquez ici une URL vers une image (en .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp ou .tiff).",
+  file_url: "URL vers un fichier",
+  file_url_instr:
+    "Indiquez ici une URL vers n'importe quel fichier avec une extension (ex: .pdf, .jpeg, .exe, .ino, .zip, etc.).",
+  import_from_url: "Importer depuis une URL",
+  example_file_url: "Exemple d'URL de fichier",
+  importing_from_url: "Importation depuis l'URL…",
+  preview_of_image: "Aperçu de l'image",
+  preview_of_file: "Aperçu du fichier",
+  video_preview_not_supported: "Aperçu vidéo non supporté",
+  audio_preview_not_supported: "Aperçu audio non supporté",
+  pdf_preview_not_supported: "Aperçu PDF non supporté",
+  executable_file_warning:
+    "⚠️ Fichier exécutable - Soyez prudent lors de l'exécution",
+  code_file: "Fichier de code",
+  archive_file: "Fichier d'archive",
+  file_size_limit_exceeded:
+    "Fichier trop volumineux - Taille maximale : {maxSize} MB",
+  failed_to_import_from_url: "Échec de l'importation de l’image depuis l’URL",
   url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
   table: "Tableau",
@@ -241,6 +262,8 @@ export default {
   in_another_section: "Dans un autre chapitre",
   change_section: "Déplacer vers un autre chapitre",
   remove_section: "Supprimer le chapitre",
+  remove_area: "Supprimer cette zone",
+  remove_area_confirm: "Êtes-vous sûr de vouloir supprimer cette zone ?",
 
   untitled: "Sans titre",
   responsive: "Fluide",
@@ -291,6 +314,7 @@ export default {
   remove_category: "Supprimer cette catégorie",
 
   opacity: "Opacité",
+  fill_opacity: "Opacité de remplissage",
   page_spreads: "Pages en vis-à-vis",
   page: "Page",
   page_content: "Contenu de la page…",
@@ -417,7 +441,7 @@ export default {
   restart: "Fermer et redémarrer",
 
   refresh_window_to_see_changes:
-    "Rafraîchir la fenêtre pour voir les modifications",
+    "Recharger la fenêtre pour voir les modifications",
   reveal_pwd: "Révéler le mot de passe",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -483,8 +507,10 @@ export default {
   fonts: "Police de caractères",
   add_font: "Ajouter une police de caractères",
   font_name: "Nom de la police de caractères",
+  fonts_instr:
+    "Les polices de caractères sont utilisées pour l’affichage des textes dans les blocs de texte et les publications. Les polices de caractères ajoutées sont disponibles pour tous les utilisateurs, sur l’ensemble de l’instance.",
   font_instr:
-    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant.",
+    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant. Pour télécharger des familles de caractères, vous pouvez utiliser <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Régulier (400)",
   font_bold: "Gras (700)",
   font_normal: "Normal",
@@ -511,11 +537,11 @@ export default {
   trim_video_summary: "Couper la fin ou le début dans une vidéo",
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
-  start: "début",
+  start: "Début",
   set_start: "Définir le début",
   play_extract: "Jouer l’extrait",
   stop_extract: "Arrêter l’extrait",
-  end: "fin",
+  end: "Fin",
   set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
@@ -554,10 +580,8 @@ export default {
   transparent: "Transparent",
   couldnt_load_getusermedia: "Impossible de charger la caméra ou le micro",
   failed_listing_devices: "Impossible de lister les appareils",
-  failed_to_start_stream_sharing: "Échec du démarrage du partage de flux",
   failed_to_start_recording: "Échec du démarrage de l’enregistrement",
   new_user_connected_to_stream: "Nouvel utilisateur connecté au flux",
-  no_stream_found_while_sharing: "Aucun flux trouvé pendant le partage",
   media_couldnt_be_sent: "Échec de la sauvegarde du média",
 
   space: "Espace",
@@ -843,18 +867,19 @@ export default {
   convert_instructions: "Convertir vers un format standard",
   optimize_resize_instructions:
     "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
+  optimization_in_progress: "Optimisation en cours...",
+  optimization_completed: "Optimisation terminée",
+  optimization_started: "Optimisation démarrée",
+  optimization_aborted: "Optimisation annulée",
+  optimization_failed: "Échec de l'optimisation",
   from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
     "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
-  failed_to_share_stream: "Le partage du flux n’a pas pu avoir lieu",
   stream_local_mode: "sur cet appareil",
   stream_remote_mode: "do•doc distant",
   "stream_shown:": "Flux utilisé&nbsp;:",
-  share_stream: "Partager ce flux",
-  "stream_currently_shared_with_name:":
-    "Flux vidéo/audio partagé sous le nom&nbsp;:",
 
   remote_access: "Sources distantes",
   hangup: "raccrocher",
@@ -882,6 +907,9 @@ export default {
 
   add_media: "Ajouter un média",
   add_medias: "Ajouter des médias",
+  add_grid_area: "Ajouter une zone de grille",
+  click_empty_cell_to_add_area:
+    "Cliquez sur une cellule vide pour ajouter une zone",
   add_link: "Ajouter un lien",
   add_text: "Ajouter du texte",
 
@@ -953,7 +981,7 @@ export default {
   not_allowed_to_contribute_contact_referent:
     "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
-  or_paste_an_image: "Ou coller une image depuis le presse-papier",
+  or_paste_an_image: "Ou collez une image depuis le presse-papier",
   media_was_saved: "Média enregistré",
   no_image_in_clipboard: "Votre presse-papier ne contient pas d’images",
   project_was_removed: "Ce projet vient d’être supprimé",
@@ -963,6 +991,8 @@ export default {
     "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
   not_allowed_to_copy_to_project:
     "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
+  not_allowed_to_remix_folder:
+    "Ce projet n'autorise pas le remix. Contactez ses référents si nécessaire.",
   name_taken: "Ce nom est déjà utilisé",
   action_not_allowed: "Cette action n’est pas autorisée",
   account_created: "Votre compte a été créé",
@@ -1244,7 +1274,7 @@ export default {
     "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
 
   upload_max_file_size_in_mo: "Taille maximale des fichiers importés ou captés",
-  umo_instructions: "En mégaoctets (par défaut, 10 000, soit environ 10 Go).",
+  umo_instructions: "En mégaoctets (par défaut 10 000, soit environ 10 Go).",
 
   scan_qr_code: "Scanner un code QR",
   opening_link_in: "Ouverture du lien dans",
@@ -1318,7 +1348,7 @@ export default {
 
   remove_publication: "Supprimer la publication {name}",
 
-  not_logged_in: "Non connecté",
+  not_logged_in: "Utilisateur sans compte",
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
@@ -1331,7 +1361,7 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
-  graphic_styles: "Style graphiques",
+  graphic_styles: "Styles graphiques",
   edit_default_styles: "Modifier le style par défaut",
   back_to_default_styles: "Revenir au style par défaut",
   create_custom_stylesheet: "Créer une feuille de style personnalisée",
@@ -1359,6 +1389,8 @@ export default {
   restore_projects: "Restaurer des projets supprimés",
   bin: "Corbeille",
   items_in_bin: "Éléments dans la corbeille",
+  bin_removal_notice:
+    "Les éléments dans la corbeille sont automatiquement supprimés après 30 jours.",
   restore: "Restaurer",
   remove_for_good: "Supprimer définitivement",
   bin_is_empty: "La corbeille est vide",
@@ -1395,6 +1427,9 @@ export default {
   remove_column: "Supprimer la dernière colonne",
   remove_row: "Supprimer la dernière ligne",
   chats: "Discussions",
+  enable_chats: "Activer la fonctionnalité de discussion",
+  enable_chats_instructions:
+    "La fonctionnalité de discussion permet de créer des sujets où les utilisateurs sélectionnés peuvent échanger des messages. Une fois actif, cliquez sur la bulle en haut à droite de l’écran pour y accéder.",
   list_of_topics: "Liste des sujets",
   create_a_topic: "Créer un sujet",
   not_allowed_to_post_messages:
@@ -1442,22 +1477,14 @@ export default {
     "Recherche des coordonnées GPS de votre appareil...",
   gps_coordinates_found: "Coordonnées GPS trouvées.",
   column_count: "Nombre de colonnes",
+  row_count: "Nombre de lignes",
+  columns: "colonnes",
+  rows: "lignes",
+  grid_dimensions: "Dimensions de la grille",
   restore_publications: "Restaurer des publications supprimées",
   restore_medias: "Restaurer des médias supprimés",
 
   choose_emoji: "Choisir un emoji",
-  emoji_search: "Rechercher un emoji",
-  emoji_not_found: "Aucun emoji trouvé",
-  emoji_recent: "Récents",
-  emoji_people: "Personnes",
-  emoji_nature: "Animaux et nature",
-  emoji_foods: "Aliments et boissons",
-  emoji_activity: "Activités",
-  emoji_places: "Lieux et monuments",
-  emoji_objects: "Objets",
-  emoji_symbols: "Symboles et signes",
-  emoji_flags: "Drapeaux",
-  emoji_custom: "Personnalisé",
   message_too_long:
     "Le message est trop long, il ne doit pas dépasser {max_length} caractères.",
   today: "Aujourd'hui",
@@ -1474,4 +1501,92 @@ export default {
   community_updated_successfully: "Communauté mise à jour avec succès",
   community_removed_successfully: "Communauté supprimée avec succès",
   error_updating_community: "Erreur lors de la mise à jour de la communauté",
+
+  today: "Aujourd’hui",
+  copy_to_clipboard: "Copier dans le presse-papiers",
+  copied: "Copié !",
+
+  debug_logs: "Journaux de débogage",
+  logs_panel_instructions:
+    "Ce panneau affiche les fichiers journaux disponibles du serveur. Ces fichiers contiennent des informations sur l’activité de l’application, de son lancement à son arrêt (et, dans certains cas, des raisons du plantage quand cela arrive).",
+  available_logs: "Journaux disponibles",
+  no_logs_available: "Aucun journal disponible",
+  refresh_logs: "Recharger les journaux",
+
+  session_started: "Session démarrée le",
+  session_ended: "Session arrêtée le",
+  actions: "Actions",
+  session_crashed: "Session plantée",
+  session_running: "Session en cours",
+
+  last_page_reached: "Dernière page atteinte",
+  layout: "Mise en page",
+  starts_on_page: "Démarre sur",
+
+  files_being_sent:
+    "Tous les médias ont été importés | {count} média en cours d’importation | {count} médias en cours d’importation ",
+  opened_page: "Page consultée",
+  launched: "Lancement",
+
+  import_image_from_url_failed:
+    "Le document n’a pas pu être importé, seuls les images peuvent être ajoutées.",
+
+  interrupt: "Interrompre",
+
+  x_images: "Aucune image | {count} image | {count} images",
+  resume: "Reprendre l’animation",
+  compilation_started: "Création en cours…",
+
+  all_content: "Tout le contenu",
+  all_publications: "Toutes les publications",
+  camera_access_refused: "Accès à la caméra refusé",
+  disconnect_warning: "Avertissement de déconnexion",
+  failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
+  folder_copied: "Dossier copié",
+  from_website: "Depuis un site",
+  resources: "Ressources",
+  free_resources: "Ressources libres",
+  free_resources_description:
+    "Accéder à des médias libres depuis des collections en ligne (nécessite une connexion internet)",
+  import_from_project: "Importer depuis un projet",
+  import_from_project_description:
+    "Utiliser des médias de ce projet ou d’un autre du même espace",
+  resources_picker: "Sélecteur de ressources",
+  loading_resources: "Chargement des ressources…",
+  downloading: "Téléchargement…",
+  failed_to_load_resources: "Échec du chargement des ressources",
+  resource_imported_successfully: "Ressource importée avec succès",
+  failed_to_import_resource: "Échec de l'importation de la ressource",
+
+  media_type_not_handled: "Type de média non géré",
+  no_padding: "Pas de remplissage",
+  no_page_selected: "Aucune page sélectionnée",
+  no_pinned_publications: "Aucune publication épinglée",
+  no_sound: "Pas de son",
+  no_title: "Pas de titre",
+  not_supported_on_this_device: "Non supporté sur cet appareil",
+  "notifications.failed_to_find_block_line":
+    "Impossible de trouver la ligne du bloc",
+  "notifications.media_type_not_handled": "Type de média non géré",
+  on_this_list: "Sur cette liste",
+  other_users_connected: "Autres utilisateurs connectés",
+  show_cursor: "Afficher le curseur",
+  side_by_side: "Côte à côte",
+  new_line: "À la suite",
+  latest_version_available: "Dernière version disponible",
+  latest_version_available_instructions:
+    "Recherche automatiquement la dernière version disponible sur le site dodoc.fr",
+
+  check_out_dodocfr:
+    "Impossible de récupérer la dernière version disponible. Veuillez vous rendre sur <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a>.",
+  update_available_go_to_dodocfr:
+    "Une mise à jour est disponible (version {version}). Rendez-vous sur <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> pour la télécharger.",
+  up_to_date: "Vous utilisez la dernière version",
+  running_newer_version:
+    "Vous utilisez une version plus récente que la dernière version disponible ({version}).",
+  radius: "Rayon",
+  area: "Zone",
+  no_areas_defined: "Aucune zone de grille définie",
+  non_contributor: "Non contributeur",
+  space_title: "Titre de l’espace",
 };

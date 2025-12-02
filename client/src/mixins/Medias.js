@@ -133,7 +133,10 @@ export default {
         return strings.some((s) => url.includes(s));
       }
 
-      if (urlContains(cleaned_up_url, ["peertube.fr"]))
+      if (
+        urlContains(cleaned_up_url, ["peertube.fr"]) &&
+        urlContains(cleaned_up_url, ["/w/"])
+      )
         return {
           type: "peertube",
           src: this.getPeertubeEmbedFromUrl(cleaned_up_url, autoplay),
@@ -326,10 +329,17 @@ export default {
         ".wma",
         ".aif",
         ".flac",
+        ".ac3",
+        ".opus",
+        ".m4r",
+        ".m4a",
+        ".alac",
 
         ".flv",
         ".mov",
         ".avi",
+        ".mkv",
+        ".wmv",
       ];
       return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
@@ -345,7 +355,6 @@ export default {
         ".png",
 
         ".wav",
-        ".m4a",
         ".ogg",
         ".mp3",
         ".aac",

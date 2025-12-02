@@ -25,6 +25,17 @@ export default {
   back: "Back",
   save: "Save",
   input_url: "URL of the website to embed",
+  image_url: "URL of an image",
+  image_url_instr:
+    "Enter the URL of an image (in .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp or .tiff).",
+  import_from_url: "Import from URL",
+  file_url: "URL of a file",
+  file_url_instr:
+    "Enter the URL of a file (images, videos, audio, PDF documents, text files, etc.).",
+  example_image_url: "Example image URL",
+  importing_from_url: "Importing from URL...",
+  preview_of_image: "Preview of the image",
+  failed_to_import_from_url: "Failed to import image from URL",
   embed: "Embed",
   table: "Table",
   from_project: "From project",
@@ -194,6 +205,8 @@ export default {
   in_another_section: "In another chapter",
   change_section: "Move to another chapter",
   remove_section: "Remove this chapter",
+  remove_area: "Remove this area",
+  remove_area_confirm: "Are you sure you want to remove this area?",
 
   status: "Status",
   origin: "Origin",
@@ -222,6 +235,11 @@ export default {
   convert_instructions: "Convert to standard format",
   optimize_resize_instructions:
     "Convert to standard format, trim the beginning or the end, remove the audio track or modify the quality to reduce the file size.",
+  optimization_in_progress: "Optimization in progress...",
+  optimization_completed: "Optimization completed",
+  optimization_started: "Optimization started",
+  optimization_aborted: "Optimization aborted",
+  optimization_failed: "Optimization failed",
 
   from_the_first_media: "From the first media",
 
@@ -389,7 +407,7 @@ export default {
   add_font: "Add a typeface",
   font_name: "Typeface name",
   font_instr:
-    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant.",
+    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant. To download font families, you can use <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Regular (400)",
   font_bold: "Bold (700)",
   font_normal: "Normal",
@@ -477,7 +495,7 @@ export default {
   all_accounts: "All accounts",
 
   or_download_media_on_device: "or download this media to your device",
-  or_paste_an_image: "Or drop a picture",
+  or_paste_an_image: "Or paste an image",
 
   drop_here: "Drop here",
   or_drag_drop_file_here: "Or drag and drop file here",
@@ -609,6 +627,7 @@ export default {
   add_category: "Add category",
 
   opacity: "Opacity",
+  fill_opacity: "Fill opacity",
   page_spreads: "Facing pages",
   page: "Page",
   page_content: "Page content…",
@@ -700,7 +719,7 @@ export default {
   trim_video_summary: "Cut the end or start of a video",
   trim_instructions:
     "Select the area to extract by indicating the start and end time below. You can also click on the spectrogram above.",
-  start: "start",
+  start: "Start",
   set_start: "Set start",
   play_extract: "Play extract",
   stop_extract: "Stop extract",
@@ -740,10 +759,8 @@ export default {
   transparent: "Transparent",
   couldnt_load_getusermedia: "Impossible to load camera or microphone",
   failed_listing_devices: "Impossible to list devices",
-  failed_to_start_stream_sharing: "Impossible to start stream sharing",
   failed_to_start_recording: "Failed to start recording",
   new_user_connected_to_stream: "New user connected to the stream",
-  no_stream_found_while_sharing: "No stream found while sharing",
   media_couldnt_be_sent: "Media couldn't be sent",
 
   watermark: "Dressing",
@@ -914,12 +931,9 @@ export default {
   name_of_stream: "Stream name",
   failed_to_start_streams_change_source_or_res:
     "The video or audio stream could not be started.<br>Try changing the source or resolution in the settings.",
-  failed_to_share_stream: "The stream could not be shared",
   stream_local_mode: "on this device",
   stream_remote_mode: "remote do•doc",
   "stream_shown:": "Stream used:",
-  share_stream: "Share this stream",
-  "stream_currently_shared_with_name:": "Video/audio stream shared under name:",
   remote_access: "Remote Sources",
   hangup: "hang up",
   connect: "Connect",
@@ -937,6 +951,8 @@ export default {
   reload: "Reload",
   add_media: "Add media",
   add_medias: "Add media",
+  add_grid_area: "Add grid area",
+  click_empty_cell_to_add_area: "Click on an empty cell to add an area",
   add_link: "Add link",
   add_text: "Add text",
   share_link_to_page: "Share a link to this page",
@@ -993,11 +1009,13 @@ export default {
     "You do not have rights to create projects in the destination space",
   not_allowed_to_copy_to_project:
     "You do not have rights to add media to this project.",
+  not_allowed_to_remix_folder:
+    "This project does not allow remixing. Contact its referents if necessary.",
   name_taken: "This name is already in use",
   action_not_allowed: "This action is not allowed",
   account_created: "Your account has been created",
   logged_in: "Account connection is active, page reloading…",
-  informations: "informations",
+  informations: "Informations",
   metadatas: "Metadatas",
 
   duplicate: "Duplicate",
@@ -1178,7 +1196,7 @@ export default {
     "The contents will be moved to a subfolder (like a trash).",
 
   upload_max_file_size_in_mo: "Maximum file size for uploads or captures",
-  umo_instructions: "In megabytes (by default, 10 000, so about 10 Go).",
+  umo_instructions: "In megabytes (by default 10 000, so about 10 Go).",
 
   scan_qr_code: "Scan QR code",
   opening_link_in: "Opening link in",
@@ -1250,7 +1268,7 @@ export default {
 
   remove_publication: "Delete publication {name}",
 
-  not_logged_in: "Not logged in",
+  not_logged_in: "User without account",
 
   chapters: "Chapters",
   create_chapter: "Create a chapter",
@@ -1295,6 +1313,8 @@ export default {
   restore_projects: "Restore projects",
   bin: "Trash",
   items_in_bin: "Items in the trash",
+  bin_removal_notice:
+    "Items in the trash are automatically removed after 30 days.",
   all_pages: "All pages",
   all_spreads: "All spreads",
   spreads_to_export: "Spreads to export",
@@ -1328,6 +1348,9 @@ export default {
   remove_column: "Remove column",
   remove_row: "Remove row",
   chats: "Discussion topics",
+  enable_chats: "Enable the discussion feature",
+  enable_chats_instructions:
+    "The discussion feature allows you to create topics where selected users can exchange messages. Once enabled, click on the bubble in the top right of the screen to access it.",
   list_of_topics: "List of topics",
   create_a_topic: "Create a topic",
   not_allowed_to_post_messages:
@@ -1373,6 +1396,10 @@ export default {
   looking_for_gps_coordinates: "Looking for GPS coordinates...",
   gps_coordinates_found: "GPS coordinates found.",
   column_count: "Column count",
+  row_count: "Row count",
+  columns: "columns",
+  rows: "rows",
+  grid_dimensions: "Grid dimensions",
   restore_publications: "Restore deleted publications",
   add_community: "Add community",
   no_more_communities: "No more communities available",
@@ -1387,4 +1414,102 @@ export default {
   community_updated_successfully: "Community updated successfully",
   community_removed_successfully: "Community removed successfully",
   error_updating_community: "Error updating community",
+
+  debug_logs: "Debug logs",
+  logs_panel_instructions:
+    "This panel shows the available log files from the server. These files contain information about the activity of the application, from its launch to its shutdown (and, in some cases, the reasons for the crash when it happens).",
+  available_logs: "Available logs",
+  no_logs_available: "No logs available",
+  refresh_logs: "Refresh logs",
+
+  session_started: "Session started",
+  session_ended: "Session ended",
+  actions: "Actions",
+  session_crashed: "Session crashed",
+  session_running: "Session running",
+
+  last_page_reached: "Last page reached",
+  fonts_instr:
+    "Fonts are used to display texts in text blocks and publications. Fonts added are available to all users, on the entire instance.",
+
+  files_being_sent:
+    "All medias have been imported | {count} media being imported | {count} medias being imported",
+  opened_page: "Opened page",
+  launched: "Launched on",
+
+  interrupt: "Interrupt",
+  x_images: "No image | {count} image | {count} images",
+  resume: "Resume animation",
+  compilation_started: "Creation in progress…",
+
+  // Missing translations found in codebase
+  A4_landscape_explanations: "A4 landscape format",
+  A4_portrait_explanations: "A4 portrait format",
+  A5_landscape_explanations: "A5 landscape format",
+  A5_portrait_explanations: "A5 portrait format",
+  admins_and_contributors_instr:
+    "Instructions for administrators and contributors",
+  all_content: "All content",
+  all_publications: "All publications",
+  anonymous: "Anonymous",
+  camera_access_refused: "Camera access refused",
+  change_base_media: "Change base media",
+  change_page: "Change page",
+  "click_in_video…": "Click in the video…",
+  disconnect_warning: "Disconnect warning",
+  failed_to_find_block_line: "Failed to find block line",
+  folder_copied: "Folder copied",
+  import_image_from_url_failed: "Failed to import image from URL",
+  from_website: "From a website",
+  resources: "Resources",
+  free_resources: "Free resources",
+  free_resources_description: "Access free media from online collections",
+  import_from_project: "Import from project",
+  import_from_project_description:
+    "Use media from this project or another from the same space",
+  resources_picker: "Resources Picker",
+  loading_resources: "Loading resources…",
+  downloading: "Downloading…",
+  failed_to_load_resources: "Failed to load resources",
+  resource_imported_successfully: "Resource imported successfully",
+  failed_to_import_resource: "Failed to import resource",
+  layout: "Layout",
+  level: "Level",
+  media_type_not_handled: "Media type not handled",
+  message_too_long:
+    "Message too long, it must not exceed {max_length} characters.",
+  meta_filename: "Metadata filename",
+  no_email_from_folder: "No email from folder",
+  no_padding: "No padding",
+  no_page_selected: "No page selected",
+  no_pinned_publications: "No pinned publications",
+  no_sound: "No sound",
+  no_title: "No title",
+  not_supported_on_this_device: "Not supported on this device",
+  "notifications.failed_to_find_block_line": "Failed to find block line",
+  "notifications.media_type_not_handled": "Media type not handled",
+  on_this_list: "On this list",
+  other_users_connected: "Other users connected",
+  restore_medias: "Restore medias",
+  show_cursor: "Show cursor",
+  starts_on_page: "Starts on page",
+  today: "Today",
+  type: "Type",
+  side_by_side: "Side by side",
+  new_line: "One after the other",
+  latest_version_available: "Latest version available",
+  latest_version_available_instructions:
+    "Search automatically the latest version available on dodoc.fr",
+  check_out_dodocfr:
+    "Unable to retrieve the latest version available. Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a>.",
+  update_available_go_to_dodocfr:
+    "An update is available (version {version}). Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> to download it.",
+  up_to_date: "You are using the latest version",
+  running_newer_version:
+    "You are running a newer version than the latest version available ({version}).",
+  radius: "Radius",
+  area: "Area",
+  no_areas_defined: "No areas defined",
+  non_contributor: "Non contributor",
+  space_title: "Space title",
 };

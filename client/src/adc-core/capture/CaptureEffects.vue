@@ -10,6 +10,17 @@
           :content.sync="flip_vertically"
           :label="$t('flip_vertically')"
         />
+        <RangeValueInput
+          :label="$t('zoom')"
+          :value="zoom.value"
+          :can_toggle="true"
+          :min="zoom.min"
+          :max="zoom.max"
+          :step="zoom.step"
+          :ticks="zoom.ticks"
+          :default_value="zoom.default"
+          @input="zoom.value = $event"
+        />
 
         <ToggledSection
           class=""
@@ -50,7 +61,7 @@
                   type="range"
                   v-model.number="chroma_key_settings.similarity"
                   min="0"
-                  max="1"
+                  max="0.2"
                   step="0.001"
                 />
               </div>
@@ -62,7 +73,7 @@
                   type="range"
                   v-model.number="chroma_key_settings.smoothness"
                   min="0"
-                  max="1"
+                  max="0.3"
                   step="0.001"
                 />
               </div>
@@ -74,7 +85,7 @@
                   type="range"
                   v-model.number="chroma_key_settings.spill"
                   min="0"
-                  max="1"
+                  max="0.5"
                   step="0.001"
                   value="0.1"
                 />
@@ -185,9 +196,9 @@ export default {
           g: 255,
           b: 0,
         }, // 0 -> 1 by 0.001
-        similarity: 0.02, // 0 -> 1 by 0.001
-        smoothness: 0.08, // 0 -> 1 by 0.001
-        spill: 0.1, // 0 -> 1 by 0.001
+        similarity: 0.05, // 0 -> 0.2 by 0.001 (better default)
+        smoothness: 0.12, // 0 -> 0.3 by 0.001 (better default)
+        spill: 0.2, // 0 -> 0.5 by 0.001 (better default)
         replacement_color: {
           r: 252,
           g: 75,
@@ -195,6 +206,15 @@ export default {
         },
         replacement_mode: "color",
         replacement_image: undefined,
+      },
+
+      zoom: {
+        value: 1,
+        min: 1,
+        max: 10,
+        step: 0.1,
+        ticks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        default: 1,
       },
 
       image_filters_settings: {
@@ -260,9 +280,10 @@ uniform sampler2D videoTex;
 uniform float texWidth;
 uniform float texHeight;
 
-
+uniform float zoom;
 uniform int flipHorizontally;
 uniform int flipVertically;
+
 
 uniform vec3 keyColor;
 uniform vec3 replacementColor;
@@ -409,6 +430,16 @@ void main(void) {
   if(flipHorizontally == 1)
     texCoord.x = 1.0 - texCoord.x;
 
+  // Apply zoom - center around 0.5, scale, then translate back
+  texCoord.x = (texCoord.x - 0.5) / zoom + 0.5;
+  texCoord.y = (texCoord.y - 0.5) / zoom + 0.5;
+
+  // Check if coordinates are out of bounds after zoom
+  if(texCoord.x < 0.0 || texCoord.x > 1.0 || texCoord.y < 0.0 || texCoord.y > 1.0) {
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    return;
+  }
+
   vec4 videoColor = texture2D(videoTex, texCoord);
 
   // apply chroma key if necessary
@@ -507,6 +538,7 @@ void main(void) {
       return (
         this.flip_vertically === true ||
         this.flip_horizontally === true ||
+        this.zoom.value !== this.zoom.default ||
         this.chroma_key_settings.enable === true ||
         Object.keys(this.image_filters_settings).some(
           (ifs) =>
@@ -536,6 +568,7 @@ void main(void) {
     disableAllEffects() {
       this.flip_vertically = false;
       this.flip_horizontally = false;
+      this.zoom.value = 1;
       this.chroma_key_settings.enable = false;
 
       Object.keys(this.image_filters_settings).map((ifs) => {
@@ -643,6 +676,8 @@ void main(void) {
       const texWidthLoc = gl.getUniformLocation(prog, "texWidth");
       const texHeightLoc = gl.getUniformLocation(prog, "texHeight");
 
+      const zoomLoc = gl.getUniformLocation(prog, "zoom");
+
       const flipHorizontallyLoc = gl.getUniformLocation(
         prog,
         "flipHorizontally"
@@ -702,6 +737,8 @@ void main(void) {
           this.videoElement
         );
         // STOPPED LOADING WEBGL IMAGE
+
+        gl.uniform1f(zoomLoc, this.zoom.value);
 
         gl.uniform1f(texWidthLoc, this.videoElement.videoWidth);
         gl.uniform1f(texHeightLoc, this.videoElement.videoHeight);

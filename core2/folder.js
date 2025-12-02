@@ -23,6 +23,9 @@ module.exports = (function () {
       });
 
       let all_folders_with_meta = [];
+      let lastYield = Date.now();
+      const YIELD_INTERVAL_MS = 50;
+
       for (let folder_slug of folders_slugs) {
         const path_to_folder = path.join(path_to_type, folder_slug);
         const folder_meta = await API.getFolder({
@@ -34,7 +37,12 @@ module.exports = (function () {
           else throw err;
         });
         if (folder_meta) all_folders_with_meta.push(folder_meta);
-        await new Promise(setImmediate);
+
+        // Yield only if enough time has passed
+        if (Date.now() - lastYield >= YIELD_INTERVAL_MS) {
+          await new Promise(setImmediate);
+          lastYield = Date.now();
+        }
       }
 
       return all_folders_with_meta;
@@ -101,6 +109,32 @@ module.exports = (function () {
         folder_meta.$infos = await thumbs.getInfosForFolder({ path_to_folder });
 
       return folder_meta;
+    },
+    getFoldersCount: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
+
+      const item_in_schema = utils.parseAndCheckSchema({
+        relative_path: path_to_folder,
+      });
+      if (!item_in_schema || !item_in_schema.$folders) {
+        return 0;
+      }
+
+      let total_count = 0;
+      const folder_types = Object.keys(item_in_schema.$folders);
+
+      for (const folder_type of folder_types) {
+        const path_to_type = path.join(path_to_folder, folder_type);
+        try {
+          const folders_slugs = await _getFolderSlugs({ path_to_type });
+          total_count += folders_slugs.length;
+        } catch (err) {
+          // Folder type doesn't exist yet, skip it
+          if (err.code !== "ENOENT") throw err;
+        }
+      }
+
+      return total_count;
     },
 
     createFolder: async ({ path_to_type, data }) => {
@@ -323,7 +357,7 @@ module.exports = (function () {
         return acc;
       }, {});
 
-      if (update_cover_req && data) {
+      if (update_cover_req) {
         await _updateCover({
           path_to_folder,
           data,
@@ -363,7 +397,7 @@ module.exports = (function () {
       // check for field uniqueness
       await _cleanFields({
         meta: new_meta,
-        path_to_type,
+        path_to_type: path_to_destination_type,
         context: "update",
       });
 
@@ -394,7 +428,7 @@ module.exports = (function () {
       });
 
       await API.updateFolder({
-        path_to_type,
+        path_to_type: path_to_destination_type,
         path_to_folder: path_to_destination_folder,
         admin_meta: {
           $date_created: utils.getCurrentDate(),
@@ -495,6 +529,9 @@ module.exports = (function () {
       });
 
       await _removeFolderForGood({ path_to_folder: path_to_folder_in_bin });
+      await thumbs.removeFolderThumbs({
+        path_to_folder: path_to_folder_in_bin,
+      });
 
       return restored_folder_path;
     },
@@ -542,7 +579,7 @@ module.exports = (function () {
     await thumbs.removeFolderCover({ path_to_folder });
     await fs.remove(full_path_to_thumb);
 
-    if (data.hasOwnProperty("path_to_meta")) {
+    if (data?.hasOwnProperty("path_to_meta")) {
       if (data.path_to_meta === "") return;
 
       const path_to_meta = utils.convertToLocalPath(data.path_to_meta);

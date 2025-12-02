@@ -11,36 +11,47 @@
     </div> -->
     <div class="_navBtns">
       <div class="_navBtns--content">
-        <div>
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="prev_section"
-            @click="$emit('prev')"
-          >
-            <b-icon icon="arrow-left-short" />
-            <span>
-              {{ prev_section.section_title }}
-            </span>
-          </button>
+        <div class="" />
+        <div
+          class="_navBtns--content--buttons"
+          v-show="next_section || prev_section"
+        >
+          <span>
+            <button
+              type="button"
+              class="u-linkList"
+              v-if="prev_section"
+              @click="$emit('prev')"
+            >
+              <b-icon icon="arrow-left-short" />
+              <span>
+                {{ prev_section.section_title }}
+              </span>
+            </button>
+            <span v-else>–</span>
+          </span>
+
+          <span class="_separator">|</span>
+
+          <span>
+            <button
+              type="button"
+              class="u-linkList"
+              v-if="next_section"
+              @click="$emit('next')"
+            >
+              <span>
+                {{ next_section.section_title }}
+              </span>
+              <b-icon icon="arrow-right-short" />
+            </button>
+            <span v-else>–</span>
+          </span>
         </div>
         <div>
           <button type="button" class="u-linkList" @click="$emit('close')">
-            <b-icon icon="x-circle" :label="$t('close')" />
+            <b-icon icon="x" :label="$t('close')" />
             {{ $t("close") }}
-          </button>
-        </div>
-        <div>
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="next_section"
-            @click="$emit('next')"
-          >
-            <span>
-              {{ next_section.section_title }}
-            </span>
-            <b-icon icon="arrow-right-short" />
           </button>
         </div>
       </div>
@@ -89,6 +100,10 @@
             <b-icon icon="image" />
             {{ $t("gallery") }}
           </template>
+          <template v-else-if="chapter.section_type === 'grid'">
+            <b-icon icon="grid-fill" />
+            {{ $t("grid") }}
+          </template>
           <template v-else-if="chapter.section_type === 'story'">
             <b-icon icon="list" />
             {{ $t("story") }}
@@ -113,10 +128,7 @@
         </transition>
       </div>
 
-      <fieldset
-        v-if="chapter.section_type === 'text'"
-        class="_text_image_layout"
-      >
+      <fieldset v-if="chapter.section_type === 'text'">
         <legend>{{ $t("text_image_layout") }}</legend>
         <div class="_colCount">
           <DLabel :str="$t('column_count')" />
@@ -135,19 +147,6 @@
               ]"
             />
           </div>
-        </div>
-
-        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
-          <DLabel :str="$t('starts_on_page')" />
-          <SelectField2
-            :field_name="'section_starts_on_page'"
-            :value="chapter.section_starts_on_page || ''"
-            :path="chapter.$path"
-            size="small"
-            :hide_validation="true"
-            :can_edit="true"
-            :options="starts_on_page_options"
-          />
         </div>
       </fieldset>
 
@@ -190,45 +189,10 @@
           </template>
         </template>
         <template v-if="chapter.section_type === 'gallery'">
-          <transition-group
-            tag="div"
-            class="_gallery"
-            name="StoryModules"
-            appear
-          >
-            <div
-              class="_gallery--item"
-              v-for="media in gallery_medias"
-              :key="media.$path"
-            >
-              <MediaContent :file="media" :context="'full'" />
-              <div class="_remove_media">
-                <RemoveMenu
-                  :show_button_text="false"
-                  @remove="removeMedia(media)"
-                />
-              </div>
-            </div>
-
-            <div class="_add_medias" key="add_medias">
-              <button
-                type="button"
-                class="u-button u-button_bleuvert"
-                @click="show_media_picker = true"
-              >
-                {{ $t("add_medias") }}
-              </button>
-            </div>
-          </transition-group>
-
-          <MediaPicker
-            v-if="show_media_picker"
-            :publication_path="publication.$path"
-            :select_mode="'multiple'"
-            :pick_from_types="['image']"
-            @pickMedias="pickMediasForGallery"
-            @close="show_media_picker = false"
-          />
+          <GalleryChapter :chapter="chapter" :publication="publication" />
+        </template>
+        <template v-if="chapter.section_type === 'grid'">
+          <GridChapter :chapter="chapter" :publication="publication" />
         </template>
         <template v-if="chapter.section_type === 'story'">
           <SingleSection
@@ -248,7 +212,9 @@ import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 
 import PickMediaForMarkdown from "@/components/publications/edition/PickMediaForMarkdown.vue";
-import MediaPicker from "@/components/publications/MediaPicker.vue";
+import GalleryChapter from "@/components/publications/edition/GalleryChapter.vue";
+import GridChapter from "@/components/publications/edition/GridChapter.vue";
+import ChapterLayout from "@/components/publications/edition/ChapterLayout.vue";
 
 export default {
   props: {
@@ -263,7 +229,9 @@ export default {
   components: {
     // MarkdownEditor,
     PickMediaForMarkdown,
-    MediaPicker,
+    GalleryChapter,
+    GridChapter,
+    ChapterLayout,
     SingleSection: () =>
       import("@/components/publications/story/SingleSection.vue"),
   },
@@ -308,59 +276,6 @@ export default {
     },
     main_text_content() {
       return this.chapter._main_text?.$content;
-    },
-    gallery_medias() {
-      const medias = [];
-      if (
-        this.chapter.section_type !== "gallery" ||
-        !this.chapter.source_medias
-      )
-        return [];
-      for (const source_media of this.chapter.source_medias) {
-        const folder_path = this.getParent(this.chapter.$path);
-        const media = this.getSourceMedia({
-          source_media,
-          folder_path,
-        });
-        if (media) medias.push(media);
-      }
-      return medias;
-    },
-    starts_on_page_options() {
-      if (this.chapter.section_type === "gallery")
-        return [
-          {
-            key: "page",
-            text: this.$t("next_page"),
-          },
-          {
-            key: "left",
-            text: this.$t("next_left_page"),
-          },
-          {
-            key: "right",
-            text: this.$t("next_right_page"),
-          },
-        ];
-      else
-        return [
-          {
-            key: "",
-            text: this.$t("in_flow"),
-          },
-          {
-            key: "page",
-            text: this.$t("next_page"),
-          },
-          {
-            key: "left",
-            text: this.$t("next_left_page"),
-          },
-          {
-            key: "right",
-            text: this.$t("next_right_page"),
-          },
-        ];
     },
   },
   methods: {
@@ -488,38 +403,6 @@ export default {
         };
       }
     },
-
-    async pickMediasForGallery(medias) {
-      const new_entries = [];
-      for (const media of medias) {
-        const import_mode = this.$root.publication_include_mode;
-        const new_entry = await this.prepareMediaForPublication({
-          path_to_source_media_meta: media.$path,
-          publication_path: this.publication.$path,
-          import_mode,
-        });
-        new_entries.push(new_entry);
-      }
-
-      const existing_source_medias = this.chapter.source_medias || [];
-      const source_medias = [...existing_source_medias, ...new_entries];
-
-      this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: {
-          source_medias,
-        },
-      });
-    },
-    removeMedia(media) {
-      const source_medias = this.chapter.source_medias.filter(
-        (sm) => sm.meta_filename_in_project !== this.getFilename(media.$path)
-      );
-      this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: { source_medias },
-      });
-    },
   },
 };
 </script>
@@ -588,6 +471,7 @@ export default {
   // padding-top: calc(var(--spacing) * 4);
   // padding-bottom: calc(var(--spacing) * 4);
 }
+
 ._navBtns--content {
   display: flex;
   align-items: center;
@@ -595,20 +479,52 @@ export default {
   gap: calc(var(--spacing) / 1);
   height: 20px;
 
-  > * {
-    flex: 1 1 0;
-    overflow: hidden;
+  &:first-child,
+  &:last-child {
+    flex: 0 0 10ch;
+  }
 
-    &:nth-child(2) {
-      .u-linkList {
-        justify-content: center;
-      }
+  > * {
+    flex: 0 1 10ch;
+    overflow: hidden;
+  }
+}
+
+._navBtns--content--buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+
+  > * {
+    display: block;
+    flex: 1 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    > * {
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     }
-    &:last-child {
-      .u-linkList {
+
+    &:first-child {
+      text-align: right;
+
+      > * {
         justify-content: flex-end;
       }
     }
+
+    &:last-child > * {
+      text-align: left;
+    }
+  }
+
+  ._separator {
+    flex: 0 0 1ch;
+    margin: 0ch;
+    text-align: center;
   }
 }
 
@@ -623,9 +539,7 @@ export default {
   min-height: 8rem;
 }
 ._content--type {
-  .b-icon {
-    vertical-align: middle;
-  }
+  font-weight: 500;
 }
 
 ._infos {
@@ -636,66 +550,6 @@ export default {
   justify-content: space-between;
   align-items: baseline;
   gap: calc(var(--spacing) * 1);
-}
-
-._gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: calc(var(--spacing) * 1);
-
-  ._add_medias {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-
-  ._gallery--item {
-    position: relative;
-    aspect-ratio: 1/1;
-
-    border: 2px solid var(--c-gris_clair);
-    // aspect-ratio: 1/1;
-    overflow: hidden;
-
-    ::v-deep {
-      ._mediaContent {
-        width: 100%;
-        height: 100%;
-      }
-
-      ._mediaContent--image,
-      .plyr--video,
-      .plyr__poster,
-      ._mediaContent--iframe,
-      ._iframeStylePreview {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        top: 0;
-        left: 0;
-        object-fit: scale-down;
-        background-size: scale-down;
-        background-color: var(--c-gris_clair);
-      }
-    }
-  }
-}
-
-._remove_media {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 2);
-}
-
-._selects--starts_on_page {
-  width: 30ch;
-  // width: auto;
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 2;
-  // margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._selects--pageRange {
@@ -717,11 +571,5 @@ export default {
 
 ._colCount {
   max-width: 20ch;
-}
-._text_image_layout {
-  display: flex;
-  flex-direction: row;
-  gap: calc(var(--spacing) * 1);
-  margin-bottom: calc(var(--spacing) * 1);
 }
 </style>

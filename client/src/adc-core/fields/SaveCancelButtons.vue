@@ -49,6 +49,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  align-items: center;
   gap: calc(var(--spacing) / 4);
   flex-grow: 1;
 }

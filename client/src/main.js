@@ -123,6 +123,10 @@ if (window.app_infos.is_electron)
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
+// Import DOMPurify for HTML sanitization
+import DOMPurify from "dompurify";
+Vue.prototype.$sanitize = DOMPurify.sanitize;
+
 // globals mainly for non-editing components
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
@@ -234,8 +238,6 @@ import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
 import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
 Vue.component("FullscreenView", FullscreenView);
-import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
-Vue.component("CollaborativeEditor2", CollaborativeEditor2);
 import CollaborativeEditor3 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor3.vue";
 Vue.component("CollaborativeEditor3", CollaborativeEditor3);
 import TableEditor from "@/adc-core/fields/TableEditor.vue";

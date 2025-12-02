@@ -1,17 +1,27 @@
 <template>
   <span class="_titleField">
-    <DLabel
-      v-if="label && show_label"
-      class="_label"
-      :str="label"
-      :instructions="can_edit ? instructions : ''"
-    />
+    <DLabel v-if="label && show_label" class="_label" :str="label" />
 
     <div class="_container">
       <div class="_content">
         <component :is="tag">
-          <span v-if="content && content.length > 0" v-html="clean_content" />
-          <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
+          <span
+            v-if="content && clean_content.length > 0"
+            v-html="clean_content"
+            @click="enableEditMode"
+          />
+          <span
+            v-else
+            v-text="'-'"
+            class="u-instructions"
+            @click="enableEditMode"
+          />
+          <EditBtn
+            v-if="can_edit"
+            class="_edit"
+            :label="clean_content.length > 0 ? $t('edit') : $t('add')"
+            @click="enableEditMode"
+          />
         </component>
       </div>
     </div>
@@ -27,22 +37,20 @@
         <span v-html="instructions" />
       </div>
 
-      <component :is="tag">
-        <TextInput
-          ref="TextInput"
-          :content.sync="new_content"
-          :required="required"
-          :input_type="input_type"
-          :autofocus="true"
-          :autocomplete="input_type === 'email' ? 'email' : undefined"
-          :minlength="minlength"
-          :custom_formats="custom_formats"
-          :maxlength="maxlength"
-          :key="edit_mode + content"
-          @toggleValidity="($event) => (allow_save = $event)"
-          @onEnter="input_type !== 'editor' ? updateText() : undefined"
-        />
-      </component>
+      <TextInput
+        ref="TextInput"
+        :content.sync="new_content"
+        :required="required"
+        :input_type="input_type"
+        :autofocus="true"
+        :autocomplete="input_type === 'email' ? 'email' : undefined"
+        :minlength="minlength"
+        :custom_formats="custom_formats"
+        :maxlength="maxlength"
+        :key="edit_mode + content"
+        @toggleValidity="($event) => (allow_save = $event)"
+        @onEnter="input_type !== 'editor' ? updateText() : undefined"
+      />
 
       <SaveCancelButtons
         slot="footer"
@@ -55,8 +63,6 @@
   </span>
 </template>
 <script>
-import DOMPurify from "dompurify";
-
 export default {
   props: {
     field_name: String,
@@ -128,11 +134,16 @@ export default {
       return this.new_content !== this.content;
     },
     clean_content() {
-      return DOMPurify.sanitize(this.content);
+      return this.$sanitize(this.content);
     },
   },
   methods: {
     enableEditMode() {
+      if (!this.can_edit) return;
+      // Don't start edit mode if user currently has a text selection
+      if (window.getSelection && window.getSelection().toString().length > 0) {
+        return;
+      }
       this.edit_mode = true;
     },
     cancel() {
@@ -216,6 +227,8 @@ export default {
       }
     }
   }
+  &:hover > ._label {
+  }
 }
 
 ._footer {
@@ -261,6 +274,24 @@ export default {
 }
 
 ._edit {
-  margin-top: -4px;
+  // margin-top: -4px;
+
+  /* Hide edit button by default on devices that support hover */
+  @media (hover: hover) {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Always show on touch devices */
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+/* Show edit button on hover for devices that support hover */
+._titleField:hover ._edit {
+  @media (hover: hover) {
+    opacity: 1;
+  }
 }
 </style>

@@ -27,13 +27,13 @@
           class="u-instructions _noSourceMedia"
           v-text="$t('source_media_missing')"
         />
-        <CollaborativeEditor2
+        <CollaborativeEditor3
           v-else-if="media_with_linked._linked_media.$type === 'text'"
           class="_mediaContent--collabEditor"
           :key="edit_mode"
           :content="media_with_linked._linked_media.$content"
           :path="media_with_linked._linked_media.$path"
-          :edit_on_mounted="edit_mode"
+          :mode="'edit_on_mounted'"
           :can_edit="edit_mode"
         />
         <TableEditor
@@ -262,6 +262,7 @@ export default {
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
+    width: 100%;
   }
 
   &.is--singleText {
@@ -278,6 +279,10 @@ export default {
   > ._mediaGrid--item {
     position: relative;
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    ::v-deep ._iframeStylePreview {
+      object-fit: var(--object-fit, cover);
+    }
   }
 
   // ._dzInbetween {
@@ -294,8 +299,11 @@ export default {
     &[data-mediatype="text"] {
       aspect-ratio: auto;
     }
+    &[data-mediatype="audio"] {
+      aspect-ratio: auto;
+    }
     &:not([data-mediatype="text"]) {
-      background: var(--c-gris_clair);
+      // background: var(--c-gris_clair);
     }
   }
 
@@ -386,5 +394,11 @@ export default {
 
 ._dzAfter {
   z-index: 1000;
+}
+
+._mediaContent--collabEditor {
+  ::v-deep ._editText {
+    margin-right: calc(var(--spacing) * 3);
+  }
 }
 </style>

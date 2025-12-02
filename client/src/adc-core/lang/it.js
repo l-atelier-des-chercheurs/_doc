@@ -216,6 +216,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   in_another_section: "In un altro capitolo",
   change_section: "Sposta verso un altro capitolo",
   remove_section: "Elimina il capitolo",
+  remove_area: "Elimina questa zona",
+  remove_area_confirm: "Sei sicuro di voler eliminare questa zona?",
 
   untitled: "Senza titolo",
   responsive: "Fluido",
@@ -446,7 +448,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   add_font: "Aggiungi un font",
   font_name: "Nome del font",
   font_instr:
-    "Importa prima i 4 file necessari per inserire un nuovo font in formato woff2. Poi specifica per ogni elemento il file corrispondente .",
+    "Importa prima i 4 file necessari per inserire un nuovo font in formato woff2. Poi specifica per ogni elemento il file corrispondente. Per scaricare famiglie di font, puoi utilizzare <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Regolare (400)",
   font_bold: "Grasseto (700)",
   font_normal: "Normale",
@@ -516,12 +518,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   couldnt_load_getusermedia:
     "Impossibile caricare la fotocamera o il microfono",
   failed_listing_devices: "Impossibile elencare i dispositivi",
-  failed_to_start_stream_sharing:
-    "Avvio della condivisione delllo streaming non riuscito",
   failed_to_start_recording: "Avvio della registrazione non riuscito",
   new_user_connected_to_stream: "Nuovo utente connesso allo streaming",
-  no_stream_found_while_sharing:
-    "Nessuno streaming  trovato durante la condivisione",
   media_couldnt_be_sent: "Salvataggio del media non riuscito",
 
   space: "Spazio",
@@ -806,13 +804,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   name_of_stream: "Nome dello stream",
   failed_to_start_streams_change_source_or_res:
     "Non è stato possibile avviare lo stream video o audio.<br>Provare a modificare il sorgente o la risoluzione nelle impostazioni.",
-  failed_to_share_stream: "Non è stato possibile condividere il feed",
   stream_local_mode: "su questo dispositivo",
   stream_remote_mode: "do•doc remoto",
   "stream_shown:": "Stream utilizzato&nbsp;:",
-  share_stream: "Condividi questo stream",
-  "stream_currently_shared_with_name:":
-    "Stream video/audio condiviso con il nome&nbsp;:",
 
   remote_access: "Sorgenti remoti",
   hangup: "riagganciare",
@@ -918,6 +912,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "Non hai i diritti per creare progetti nello spazio di destinazione",
   not_allowed_to_copy_to_project:
     "Non hai i diritti per aggiungere i media a questo progetto",
+  not_allowed_to_remix_folder:
+    "Questo progetto non consente il remix. Contatta i suoi referenti se necessario.",
   name_taken: "Questo nome è già in uso",
   action_not_allowed: "Questa azione non è autorizzata",
   account_created: "Il tuo account è stato creato",
@@ -1269,7 +1265,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   remove_publication: "Elimina la pubblicazione {name}",
 
-  not_logged_in: "Non connesso",
+  not_logged_in: "Utente senza account",
 
   chapters: "Capitoli",
   create_chapter: "Crea un capitolo",
@@ -1304,4 +1300,19 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   warning_wont_be_able_to_edit:
     "Attenzione! Modificando questa impostazione, questo contenuto non potrà più essere modificato.",
   forgot_password: "Hai dimenticato la password?",
+
+  from_website: "Da un sito web",
+  resources: "Risorse",
+  free_resources: "Risorse gratuite",
+  free_resources_description: "Accedi a media gratuiti da collezioni online",
+  import_from_project: "Importa dal progetto",
+  import_from_project_description:
+    "Usa media dai tuoi progetti o da un altro progetto del tuo spazio",
+  resources_picker: "Selettore di risorse",
+  loading_resources: "Caricamento delle risorse…",
+  downloading: "Download in corso…",
+  failed_to_load_resources: "Impossibile caricare le risorse",
+  resource_imported_successfully: "Risorsa importata con successo",
+  failed_to_import_resource: "Impossibile importare la risorsa",
+  space_title: "Titolo dello spazio",
 };

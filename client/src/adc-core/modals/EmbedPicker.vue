@@ -15,6 +15,7 @@
           :content.sync="full_url"
           :placeholder="'https://'"
           :required="true"
+          :autofocus="true"
           :input_type="'url'"
           @toggleValidity="($event) => (allow_save = $event)"
         />
@@ -68,9 +69,7 @@
 
       <LoaderSpinner class="_loader" v-if="is_loading" />
       <div v-else-if="url_to_site" class="_previewEmbed" :key="url_to_site.src">
-        <template
-          v-if="url_to_site.type === 'any' || url_to_site.type === 'youtube'"
-        >
+        <template v-if="url_to_site.type === 'any'">
           <iframe
             class="_siteIframe"
             :src="url_to_site.src"

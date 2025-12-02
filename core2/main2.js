@@ -6,17 +6,41 @@ const server = require("./server"),
   dev = require("./dev-log"),
   cache = require("./cache"),
   cacheManager = require("./cache-manager"),
+  binCleanup = require("./bin-cleanup"),
   utils = require("./utils"),
   paths = require("./paths"),
   auth = require("./auth"),
-  mail = require("./mail");
+  mail = require("./mail"),
+  journal = require("./journal"),
+  ffmpegTracker = require("./ffmpeg-tracker");
 
 module.exports = async function () {
   global.is_electron = process.versions.hasOwnProperty("electron");
 
-  console.log(`App is ${global.is_electron ? "electron" : "node"}`);
-  console.log(`Starting = ${global.appInfos.name}`);
-  console.log(`Node = ${process.versions.node}`);
+  const infos = `Starting ${global.appInfos.name} v${
+    global.appInfos.version
+  }, app is ${global.is_electron ? "electron" : "node"}, node v${
+    process.versions.node
+  }`;
+  console.log(infos);
+  journal.log({ message: infos, from: "main2" });
+
+  // Check for Node-specific dependencies when not in Electron
+  if (!global.is_electron) {
+    try {
+      require.resolve("puppeteer");
+    } catch (e) {
+      console.error(
+        "\n❌ ERROR: Puppeteer not installed. Node mode requires puppeteer for PDF/screenshot generation."
+      );
+      console.error("Run 'npm install' to install required dependencies.\n");
+      process.exit(1);
+    }
+  }
+
+  // Log all dependencies with their installed versions
+  console.log(utils.getDependenciesWithVersions());
+  journal.log({ message: utils.getDependenciesWithVersions(), from: "main2" });
 
   // setInterval(() => {
   //   const usedHeapSize = process.memoryUsage().heapUsed;
@@ -29,9 +53,13 @@ module.exports = async function () {
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
   const livereload =
     process.argv.length > 0 && process.argv.includes("--livereload");
-  const logToFile = false;
 
-  dev.init(debug, verbose, livereload, logToFile);
+  // Initialize dev logger
+  dev.init({ debug, verbose, livereload });
+  journal.log({
+    message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}`,
+    from: "main2",
+  });
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
@@ -43,7 +71,7 @@ module.exports = async function () {
   let win;
   if (global.is_electron) {
     try {
-      win = await require("./electron").init();
+      win = await require("../electron/electron").init();
     } catch (err) {
       dev.error(err);
       throw err;
@@ -104,7 +132,8 @@ async function setupApp() {
 
   await cacheManager.init();
 
-  global.ffmpeg_processes = [];
+  // Initialize ffmpeg tracker for process management
+  ffmpegTracker.init();
 
   if (global.settings.cache_content === true) cache.init();
 
@@ -124,10 +153,36 @@ async function setupApp() {
     throw err;
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
+  journal.log({
+    message: "Will store contents in: " + global.pathToUserContent,
+    from: "main2",
+  });
+
+  // Now that content path is available, start file logging if requested
+  journal.init();
+  dev.log("Journal logging started");
 
   global.can_send_email = mail.canSendMail();
+  journal.log({
+    message: "Can send email: " + global.can_send_email,
+    from: "main2",
+  });
+
+  // Initialize auth module (tokens file creation and cleanup task)
+  await auth.init();
+  journal.log({
+    message: "Auth module initialized",
+    from: "main2",
+  });
 
   auth.createSuperadminToken();
+
+  // Initialize bin cleanup module (runs periodically to remove old bin items)
+  await binCleanup.init();
+  journal.log({
+    message: "Bin cleanup module initialized",
+    from: "main2",
+  });
 
   const port = await portscanner
     .findAPortNotInUse(
@@ -139,12 +194,21 @@ async function setupApp() {
       throw err;
     });
 
-  if (port === global.settings.desired_port)
+  if (port === global.settings.desired_port) {
     dev.log(`Desired port ${port} available`);
-  else
+    journal.log({
+      message: `Desired port ${port} available`,
+      from: "main2",
+    });
+  } else {
     dev.log(
       `Desired port ${global.settings.desired_port} NOT available, using ${port}`
     );
+    journal.log({
+      message: `Desired port ${global.settings.desired_port} NOT available, using ${port}`,
+      from: "main2",
+    });
+  }
 
   global.appInfos.port = port;
   global.appInfos.homeURL = `${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;
@@ -229,8 +293,6 @@ async function contentFolderIsValid(full_path) {
   const meta = utils.parseMeta(meta_file_content);
 
   if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
-
-  // TODO improve here: if folder is not valid, create in a subfolder called dodoc-next
 
   return true;
 }
