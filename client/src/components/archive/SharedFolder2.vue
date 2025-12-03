@@ -12,7 +12,7 @@
           >
             <button
               type="button"
-              class="u-button u-button_pill u-button_black"
+              class="u-button u-button_pill u-button_white"
               :class="{ 'is--active': isCommunityActive(folder.$path) }"
               @click="toggleCorpus(folder.$path)"
             >

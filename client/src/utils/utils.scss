@@ -345,7 +345,6 @@ button {
   &.is--active {
     &:not([disabled]) {
       background-color: var(--active-color);
-      color: white;
     }
   }
 
