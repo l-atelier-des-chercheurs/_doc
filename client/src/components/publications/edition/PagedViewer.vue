@@ -719,12 +719,6 @@ export default {
     @media screen {
       .is--editable & {
         /* Show grid lines on the grid container */
-        .grid-content {
-          /* Create a visual grid pattern using borders and shadows on each cell */
-          // background: transparent;
-          // position: relative;
-        }
-
         /* Add visible border to each grid cell */
         .grid-cell {
           outline: 2px solid var(--color-pageBox);
@@ -811,15 +805,14 @@ export default {
         margin: 0;
         flex-shrink: 0;
         flex-grow: 0;
+        border: 1px solid var(--c-gris);
 
         margin-top: 10mm;
         transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-      }
-      .pagedjs_page_content {
-        box-shadow: 0 0 0 1px var(--color-pageContent);
-        /* Remove margin from .pagedjs_page if it contains a grid chapter */
-        &:has(.chapter[data-chapter-type="grid"]) {
-          box-shadow: none !important;
+        // box-shadow: 0 0px 4px rgba(0, 0, 0, 0.5);
+
+        &.pagedjs_left_page {
+          border-right-width: 0px;
         }
       }
 
