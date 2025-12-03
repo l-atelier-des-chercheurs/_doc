@@ -42,13 +42,13 @@
       </select>
     </div>
 
-    <div v-if="show_source_html_toggle" class="_toggleHTML">
+    <!-- <div v-if="show_source_html_toggle" class="_toggleHTML">
       <ToggleInput
         :content="show_source_html"
         :label="$t('show_source_html')"
         @update:content="$emit('update:show_source_html', $event)"
       />
-    </div>
+    </div> -->
 
     <div class="_viewContent--content">
       <PagedViewer
