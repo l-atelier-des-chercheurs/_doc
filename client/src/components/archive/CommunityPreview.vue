@@ -167,9 +167,10 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1)
+    calc(var(--spacing) * 1);
 
-  background-color: var(--h-50);
+  background-color: white;
   border: 1px solid var(--h-200);
   border-radius: 4px;
 }

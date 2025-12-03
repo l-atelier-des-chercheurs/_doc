@@ -642,7 +642,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 2);
   border-bottom: 1px solid var(--h-200);
   overflow-x: auto;
   overflow-y: hidden;

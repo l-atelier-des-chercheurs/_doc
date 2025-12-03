@@ -287,7 +287,7 @@ export default {
             source_media: { path: path_to_source_media_meta },
             folder_path: this.publication_path,
           });
-          if (source_media.$type === "text") {
+          if (source_media?.$type === "text") {
             import_mode = "copy";
           }
 
