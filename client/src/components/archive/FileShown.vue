@@ -105,30 +105,32 @@
             </div>
           </div>
 
-          <div class="u-spacingBottom">
-            <CollaborativeEditor3
-              :label="$t('caption')"
-              :field_to_edit="'caption'"
-              :content="file.caption"
-              :path="file.$path"
-              :custom_formats="['bold', 'italic', 'link']"
-              :is_collaborative="false"
-              :maxlength="1280"
-              :can_edit="can_edit"
-            />
-          </div>
+          <div class="_captionCreditContainer">
+            <div class="_captionCreditItem">
+              <CollaborativeEditor3
+                :label="$t('caption')"
+                :field_to_edit="'caption'"
+                :content="file.caption"
+                :path="file.$path"
+                :custom_formats="['bold', 'italic', 'link']"
+                :is_collaborative="false"
+                :maxlength="1280"
+                :can_edit="can_edit"
+              />
+            </div>
 
-          <div class="">
-            <CollaborativeEditor3
-              :label="$t('credit/reference')"
-              :field_to_edit="'$credits'"
-              :content="file.$credits"
-              :path="file.$path"
-              :custom_formats="['bold', 'italic', 'link']"
-              :is_collaborative="false"
-              :maxlength="1280"
-              :can_edit="can_edit"
-            />
+            <div class="_captionCreditItem">
+              <CollaborativeEditor3
+                :label="$t('credit/reference')"
+                :field_to_edit="'$credits'"
+                :content="file.$credits"
+                :path="file.$path"
+                :custom_formats="['bold', 'italic', 'link']"
+                :is_collaborative="false"
+                :maxlength="1280"
+                :can_edit="can_edit"
+              />
+            </div>
           </div>
 
           <details>
@@ -382,5 +384,16 @@ export default {
 ._detailsP {
   display: inline-block;
   pointer-events: none;
+}
+
+._captionCreditContainer {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+}
+
+._captionCreditItem {
+  flex: 1 1 20ch;
+  min-width: 20ch;
 }
 </style>
