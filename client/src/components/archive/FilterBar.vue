@@ -159,6 +159,7 @@
                   />
                   <SingleKeyword
                     :keyword="keyword.title"
+                    :show_category="false"
                     :count="keyword.count"
                     :cat_color="getCategoryColor(category.type)"
                   />

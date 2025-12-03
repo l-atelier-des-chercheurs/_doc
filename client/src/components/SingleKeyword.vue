@@ -7,7 +7,7 @@
     :style="kw_styles"
   >
     <div class="">
-      <div class="_category" v-if="category">
+      <div class="_category" v-if="show_category && category">
         {{ category.toUpperCase() }}
       </div>
       <div class="_name">
@@ -37,6 +37,10 @@ export default {
   props: {
     keyword: String,
     count: Number,
+    show_category: {
+      type: Boolean,
+      default: true,
+    },
     cat_color: String,
     can_remove: Boolean,
     can_add: Boolean,
