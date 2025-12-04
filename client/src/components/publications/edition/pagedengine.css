@@ -185,6 +185,12 @@ hr {
 }
 
 
+.book .grid,
+.book .gallery {
+  height: calc(var(--pagedjs-height));
+  break-inside: avoid;
+}
+
 .book .gallery-content,
 .book .grid-content {
   position: absolute;
@@ -215,9 +221,6 @@ hr {
 .edition .grid,
 .edition .gallery {
   position: relative;
-  min-height: 50px;
-  break-after: page;
-  break-inside: avoid;
 }
 
 .edition .grid-content {
