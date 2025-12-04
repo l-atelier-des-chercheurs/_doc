@@ -479,7 +479,7 @@ export default {
           outline: 1px solid var(--color-pageBox);
           // outline-offset: -1px;
         }
-        .pagedjs_area {
+        .pagedjs_area:has(.chapter[data-chapter-type="text"]) {
           outline: 1px solid var(--color-pageBox);
           // outline-offset: -1px;
         }
