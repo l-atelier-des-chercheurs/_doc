@@ -39,34 +39,26 @@
             :options="starts_on_page_options"
           />
         </div>
+        <NumberInput
+          :label="$t('column_count')"
+          :value="chapter.column_count || 6"
+          :size="'small'"
+          :min="1"
+          :max="12"
+          @save="updateChapterMeta({ column_count: $event })"
+        />
+        <NumberInput
+          :label="$t('row_count')"
+          :value="chapter.row_count || 6"
+          :size="'small'"
+          :min="1"
+          :max="12"
+          @save="updateChapterMeta({ row_count: $event })"
+        />
       </div>
 
       <template v-if="chapter.section_type === 'grid'">
-        <hr />
-        <div class="_gridConfiguration">
-          <div class="_gridInputs">
-            <NumberInput
-              :label="$t('column_count')"
-              :value="chapter.column_count || 6"
-              :suffix="$t('columns')"
-              :size="'medium'"
-              :min="1"
-              :max="12"
-              @save="updateChapterMeta({ column_count: $event })"
-            />
-            <NumberInput
-              :label="$t('row_count')"
-              :value="chapter.row_count || 6"
-              :suffix="$t('rows')"
-              :size="'medium'"
-              :min="1"
-              :max="12"
-              @save="updateChapterMeta({ row_count: $event })"
-            />
-          </div>
-
-          <GridAreas :chapter="chapter" @deleteArea="deleteArea" />
-        </div>
+        <GridAreas :chapter="chapter" @deleteArea="deleteArea" />
       </template>
     </fieldset>
   </div>
@@ -172,6 +164,7 @@ export default {
   flex-flow: row nowrap;
   align-items: flex-start;
   gap: calc(var(--spacing) * 1);
+  margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._selects--starts_on_page {
@@ -183,15 +176,5 @@ export default {
 
 ._gridConfiguration {
   margin-top: calc(var(--spacing) * 1);
-}
-
-._gridInputs {
-  display: flex;
-  gap: calc(var(--spacing) * 1);
-  margin-bottom: calc(var(--spacing) * 1);
-
-  > * {
-    flex: 1 1 0;
-  }
 }
 </style>
