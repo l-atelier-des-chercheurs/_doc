@@ -26,6 +26,7 @@
     <ShowSourceHTML
       v-if="show_source_html"
       :content_html="content_html"
+      :css_styles="css_styles"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
     />
   </div>
@@ -235,7 +236,6 @@ export default {
         }
         `;
         pagedjs_styles += this.css_styles;
-
         const theme_styles = [
           {
             pagedjs_styles,
