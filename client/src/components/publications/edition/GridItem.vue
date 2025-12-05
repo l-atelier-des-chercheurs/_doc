@@ -11,32 +11,11 @@
         {{ $t("add_text") }}
       </button>
       <div v-else>
-        <CollaborativeEditor3
-          :content="area_text_meta.$content"
-          :path="area_text_meta.$path"
-          :custom_formats="[]"
-          :save_format="'raw'"
-          :content_type="'markdown'"
-          :can_edit="true"
-          :mode="'always_active'"
-          ref="collaborativeEditor"
-        >
-          <template #custom_buttons>
-            <button
-              type="button"
-              class="u-button u-button_bleumarine _customBtn"
-              @click="show_media_picker = !show_media_picker"
-            >
-              {{ $t("import_medias") }}
-            </button>
-          </template>
-        </CollaborativeEditor3>
-
-        <PickMediaForMarkdown
-          v-if="show_media_picker"
+        <MainText
+          :text_file="area_text_meta"
+          :medias_holder="area_text_meta"
           :publication_path="publication.$path"
-          @insertToText="insertToText"
-          @close="closePickModal"
+          :show_label="false"
         />
       </div>
     </div>
@@ -44,7 +23,7 @@
 </template>
 
 <script>
-import PickMediaForMarkdown from "./PickMediaForMarkdown.vue";
+import MainText from "@/components/publications/edition/MainText.vue";
 
 export default {
   props: {
@@ -58,27 +37,17 @@ export default {
     publication: Object,
   },
   components: {
-    PickMediaForMarkdown,
+    MainText,
   },
   data() {
-    return {
-      show_media_picker: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    insertToText(content) {
-      this.$refs.collaborativeEditor.insertAtCursor(content);
-      this.show_media_picker = false;
-    },
-    closePickModal() {
-      this.show_media_picker = false;
-    },
-  },
+  methods: {},
 };
 </script>
 

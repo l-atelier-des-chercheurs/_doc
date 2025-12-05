@@ -197,7 +197,7 @@ hr {
   top: calc(var(--pagedjs-margin-top) * -1);
   left: calc(var(--pagedjs-margin-left) * -1);
   width: calc(var(--pagedjs-width));
-  height: calc(var(--pagedjs-height) ); /* -1px permet de régler le petit bug de pagedjs */
+  height: calc(var(--pagedjs-height) - 1px); /* -1px permet de régler le petit bug de pagedjs */
   padding: calc(var(--spacing) * 1) !important;
   overflow: hidden;
 

@@ -563,8 +563,8 @@ export default {
         transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         // box-shadow: 0 0px 4px rgba(0, 0, 0, 0.5);
 
-        &.pagedjs_left_page {
-          border-right-width: 0px;
+        &.pagedjs_right_page:not(.pagedjs_first_page) {
+          border-left-width: 0px;
         }
       }
 

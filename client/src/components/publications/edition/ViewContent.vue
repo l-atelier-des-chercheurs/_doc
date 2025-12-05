@@ -610,8 +610,8 @@ export default {
         });
 
         if (!width && !height) {
-          width = media.$infos.width;
-          height = media.$infos.height;
+          width = media.$infos.width + "px";
+          height = media.$infos.height + "px";
         }
 
         if (media.$type === "text") {
