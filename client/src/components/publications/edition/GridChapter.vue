@@ -6,6 +6,7 @@
         :key="area.id"
         :area="area"
         :area_text_meta="getAreaTextMeta(area)"
+        :publication="publication"
         @createText="createText"
       />
     </div>

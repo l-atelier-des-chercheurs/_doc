@@ -11,32 +11,20 @@
         {{ $t("add_text") }}
       </button>
       <div v-else>
-        <CollaborativeEditor3
-          :content="area_text_meta.$content"
-          :path="area_text_meta.$path"
-          :custom_formats="[]"
-          :save_format="'raw'"
-          :content_type="'markdown'"
-          :can_edit="true"
-          :mode="'always_active'"
-          ref="collaborativeEditor"
-        >
-          <template #custom_buttons>
-            <button
-              type="button"
-              class="u-button u-button_bleumarine _customBtn"
-              @click="show_media_picker = !show_media_picker"
-            >
-              {{ $t("import_medias") }}
-            </button>
-          </template>
-        </CollaborativeEditor3>
+        <MainText
+          :text_file="area_text_meta"
+          :medias_holder="area_text_meta"
+          :publication_path="publication.$path"
+          :show_label="false"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import MainText from "@/components/publications/edition/MainText.vue";
+
 export default {
   props: {
     area: {
@@ -46,8 +34,11 @@ export default {
     area_text_meta: {
       type: Object,
     },
+    publication: Object,
   },
-  components: {},
+  components: {
+    MainText,
+  },
   data() {
     return {};
   },

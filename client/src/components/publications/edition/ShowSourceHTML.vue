@@ -2,6 +2,8 @@
   <div class="_debugMode" ref="debugMode">
     <h2>HTML</h2>
     <code ref="chapter" v-html="pretty_content_html" />
+    <h2>CSS</h2>
+    <code ref="cssStyles" v-html="css_styles" />
   </div>
 </template>
 <script>
@@ -12,6 +14,7 @@ import "highlight.js/styles/vs2015.css";
 export default {
   props: {
     content_html: String,
+    css_styles: String,
     opened_chapter_meta_filename: String,
   },
   components: {},

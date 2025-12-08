@@ -609,10 +609,10 @@ export default {
           $media_filename: media.$media_filename,
         });
 
-        if (!width && !height) {
-          width = media.$infos.width;
-          height = media.$infos.height;
-        }
+        // if (!width && !height) {
+        //   width = media.$infos.width + "px";
+        //   height = media.$infos.height;
+        // }
 
         if (media.$type === "text") {
           media_html = media.$content;
@@ -620,8 +620,6 @@ export default {
           media_html = `
             <img src="${src}"
               alt="${alt}"
-              ${width ? ` width="${width}"` : ""}
-              ${height ? ` height="${height}"` : ""}
             />
           `;
         } else {
@@ -639,16 +637,12 @@ export default {
               media_html = `
                 <video src="${src}" controls
                   alt="${alt}"
-                  ${width ? ` width="${width}"` : ""}
-                  ${height ? ` height="${height}"` : ""}
                 />
               `;
             } else if (media.$type === "audio") {
               media_html = `
                 <audio src="${src}" controls
                   alt="${alt}"
-                  ${width ? ` width="${width}"` : ""}
-                  ${height ? ` height="${height}"` : ""}
                 />
               `;
             }
@@ -793,7 +787,7 @@ export default {
   left: 0;
   z-index: 10;
   background-color: var(--c-gris_clair);
-  margin: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 2);
   border-radius: var(--border-radius);
 
   ::v-deep {

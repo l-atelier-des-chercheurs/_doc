@@ -9,24 +9,6 @@
     >
       <legend>{{ $t("layout") }}</legend>
       <div class="_optionsRow">
-        <div class="_colCount" v-if="chapter.section_type === 'text'">
-          <DLabel :str="$t('column_count')" />
-          <div class="">
-            <SelectField2
-              :field_name="'column_count'"
-              :value="chapter.column_count || 1"
-              :path="chapter.$path"
-              size="small"
-              :hide_validation="true"
-              :can_edit="true"
-              :options="[
-                { key: 1, text: '1' },
-                { key: 2, text: '2' },
-                { key: 3, text: '3' },
-              ]"
-            />
-          </div>
-        </div>
         <div class="_selects--starts_on_page">
           <DLabel :str="$t('starts_on_page')" />
           <SelectField2
@@ -39,35 +21,31 @@
             :options="starts_on_page_options"
           />
         </div>
+        <template>
+          <NumberInput
+            v-if="['text', 'grid'].includes(chapter.section_type)"
+            :label="$t('column_count')"
+            :value="chapter.column_count || 6"
+            :size="'small'"
+            :min="1"
+            :max="12"
+            @save="updateChapterMeta({ column_count: $event })"
+          />
+          <NumberInput
+            v-if="['grid'].includes(chapter.section_type)"
+            :label="$t('row_count')"
+            :value="chapter.row_count || 6"
+            :size="'small'"
+            :min="1"
+            :max="12"
+            @save="updateChapterMeta({ row_count: $event })"
+          />
+        </template>
       </div>
 
-      <template v-if="chapter.section_type === 'grid'">
-        <hr />
-        <div class="_gridConfiguration">
-          <div class="_gridInputs">
-            <NumberInput
-              :label="$t('column_count')"
-              :value="chapter.column_count || 6"
-              :suffix="$t('columns')"
-              :size="'medium'"
-              :min="1"
-              :max="12"
-              @save="updateChapterMeta({ column_count: $event })"
-            />
-            <NumberInput
-              :label="$t('row_count')"
-              :value="chapter.row_count || 6"
-              :suffix="$t('rows')"
-              :size="'medium'"
-              :min="1"
-              :max="12"
-              @save="updateChapterMeta({ row_count: $event })"
-            />
-          </div>
-
-          <GridAreas :chapter="chapter" @deleteArea="deleteArea" />
-        </div>
-      </template>
+      <div class="_gridConfiguration" v-if="chapter.section_type === 'grid'">
+        <GridAreas :chapter="chapter" @deleteArea="deleteArea" />
+      </div>
     </fieldset>
   </div>
 </template>
@@ -89,7 +67,10 @@ export default {
   },
   computed: {
     starts_on_page_options() {
-      if (this.chapter.section_type === "gallery")
+      if (
+        this.chapter.section_type === "gallery" ||
+        this.chapter.section_type === "grid"
+      )
         return [
           {
             key: "page",
@@ -169,29 +150,23 @@ export default {
 
 ._optionsRow {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: flex-start;
-  gap: calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) / 2);
+
+  > *  {
+    flex: 1 0 30ch;
+  }
 }
 
-._selects--starts_on_page {
-  width: 30ch;
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 2;
-}
+// ._selects--starts_on_page {
+//   width: 30ch;
+//   flex: 0 0 auto;
+//   position: relative;
+//   z-index: 2;
+// }
 
 ._gridConfiguration {
   margin-top: calc(var(--spacing) * 1);
-}
-
-._gridInputs {
-  display: flex;
-  gap: calc(var(--spacing) * 1);
-  margin-bottom: calc(var(--spacing) * 1);
-
-  > * {
-    flex: 1 1 0;
-  }
 }
 </style>
