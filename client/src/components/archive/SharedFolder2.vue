@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <transition name="slideup" mode="out-in">
+    <transition name="scaleInFade" mode="out-in">
       <StackDisplay
         v-if="opened_stack"
         class="_stackModal"

@@ -103,6 +103,7 @@ export default {
       start_slide: false,
       stack_files: undefined,
       index_of_slide_file_to_show: undefined,
+      is_being_opened: false,
     };
   },
   i18n: {
@@ -129,6 +130,13 @@ export default {
       const stack_slug = this.getFilename(this.stack.$path);
       // If a slide is currently being shown in the preview, include its index
       const slideIndex = this.index_of_slide_file_to_show;
+
+      // to prevent slide image changing after click
+      this.is_being_opened = true;
+      setTimeout(() => {
+        this.is_being_opened = false;
+      }, 500);
+
       this.$emit("openStack", stack_slug, slideIndex);
     },
     async startSlide(event) {
@@ -152,6 +160,7 @@ export default {
       );
     },
     endSlide() {
+      if (this.is_being_opened) return;
       this.start_slide = false;
       this.stack_files = undefined;
       this.index_of_slide_file_to_show = undefined;
@@ -291,7 +300,7 @@ export default {
   // bottom: 0;
   // background: rgba(255, 255, 255, 0.9);
 
-  // height: 1.5em;
+  height: 2.75em;
   padding-top: calc(var(--spacing) / 4);
 
   // text-overflow: ellipsis;
