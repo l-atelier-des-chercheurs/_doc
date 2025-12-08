@@ -6,66 +6,57 @@
     @mouseleave="endSlide"
     :style="{}"
   >
-    <div
+    <button
+      type="button"
       class="_stackPreview--content"
       :class="{
         'is--slider': start_slide,
         'is--selected': is_selected,
         'is--compact': display === 'compact',
       }"
+      :title="stack.title"
+      @click="openStack"
     >
       <div class="_preview">
-        <button
-          type="button"
-          class="_previewBtn"
-          :title="stack.title"
-          @click="openStack"
+        <div
+          key="preview"
+          class="_mainPreview"
+          :class="{
+            'is--showingSlides': slide_file_to_show,
+          }"
         >
-          <div
-            key="preview"
-            class="_mainPreview"
-            :class="{
-              'is--showingSlides': slide_file_to_show,
-            }"
-          >
-            <MediaContent
-              v-if="stack.$preview"
-              :file="stack.$preview"
-              :resolution="media_resolution"
-              class="_mediaPreview"
-            />
-            <b-icon v-else icon="eye-slash" class="_noVisual" />
-          </div>
+          <MediaContent
+            v-if="stack.$preview"
+            :file="stack.$preview"
+            class="_mediaPreview"
+          />
+          <b-icon v-else icon="eye-slash" />
+        </div>
 
+        <div
+          v-for="slide_file in stack_files"
+          class="_slide"
+          :class="{
+            'is--shown': slide_file.$path === slide_file_to_show?.$path,
+          }"
+          :key="slide_file.$path"
+        >
+          <MediaContent :file="slide_file" class="_mediaPreview" />
+        </div>
+        <transition name="fade_fast" mode="out-in">
           <div
-            v-for="slide_file in stack_files"
-            class="_slide"
-            :class="{
-              'is--shown': slide_file.$path === slide_file_to_show?.$path,
-            }"
-            :key="slide_file.$path"
+            class="_count"
+            v-if="start_slide && number_of_medias_in_stack > 0"
           >
-            <MediaContent
-              :file="slide_file"
-              :resolution="media_resolution"
-              class="_mediaPreview"
-            />
+            <template v-if="index_of_slide_file_to_show !== undefined">
+              {{ index_of_slide_file_to_show + 1 }} /
+              {{ number_of_medias_in_stack }}
+            </template>
+            <template v-else>
+              {{ number_of_medias_in_stack }}
+            </template>
           </div>
-          <transition name="fade_fast" mode="out-in">
-            <div
-              class="_count"
-              v-if="start_slide && number_of_medias_in_stack > 0"
-            >
-              <template v-if="index_of_slide_file_to_show !== undefined">
-                {{ index_of_slide_file_to_show + 1 }} /
-                {{ number_of_medias_in_stack }}
-              </template>
-              <template v-else>
-                {{ number_of_medias_in_stack }}
-              </template>
-            </div>
-          </transition>
-        </button>
+        </transition>
 
         <button
           type="button"
@@ -86,12 +77,15 @@
               stroke-linejoin="round"
             />
           </svg>
+
+          <!-- <b-icon v-if="!is_favorite" icon="star" :aria-label="$t('add')" />
+          <b-icon v-else icon="star-fill" :aria-label="$t('remove')" /> -->
         </button>
       </div>
-    </div>
-    <div class="_title" v-if="display !== 'compact'">
-      {{ stack.title }}
-    </div>
+      <div class="_title" v-if="display !== 'compact'">
+        {{ stack.title }}
+      </div>
+    </button>
   </div>
 </template>
 <script>
@@ -128,9 +122,6 @@ export default {
       return this.stack_files && this.index_of_slide_file_to_show !== undefined
         ? this.stack_files[this.index_of_slide_file_to_show]
         : false;
-    },
-    media_resolution() {
-      return this.display === "compact" ? 220 : 360;
     },
   },
   methods: {
@@ -186,7 +177,18 @@ export default {
 }
 
 ._stackPreview--content {
+  appearance: none;
+  padding: 0;
+  text-align: left;
+  font-size: var(--sl-font-size-x-small);
+
   position: relative;
+  // box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  background: transparent;
+  // border: 2px solid var(--c-bodybg);
+  cursor: pointer;
+
+  // border-radius: 2px;
   overflow: hidden;
   padding: 1px;
 
@@ -213,29 +215,10 @@ export default {
   }
 }
 
-._previewBtn {
-  display: block;
-  appearance: none;
-  padding: 0;
-  width: 100%;
-  text-align: left;
-  font-size: var(--sl-font-size-x-small);
-  font-weight: inherit;
-  background: transparent;
-  padding: 0;
-
-  ._stackPreview--content.is--compact & {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-}
-
 ._preview {
   position: relative;
   width: 100%;
+  // min-height: 3rem;
   // aspect-ratio: 1/1;
   overflow: hidden;
 
@@ -249,7 +232,7 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
-    // max-height: calc(var(--stack_preview_width) * 2);
+    max-height: calc(var(--stack_preview_width) * 2);
     float: right;
 
     &[data-filetype="text"] {
@@ -306,7 +289,7 @@ export default {
   // bottom: 0;
   // background: rgba(255, 255, 255, 0.9);
 
-  height: 2.7em;
+  // height: 1.5em;
   padding-top: calc(var(--spacing) / 4);
 
   // text-overflow: ellipsis;
@@ -333,35 +316,21 @@ export default {
   left: 0;
   padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   font-weight: 400;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
+  background: white;
+  color: var(--c-noir);
   line-height: 1;
   font-size: 0.75rem;
   border-radius: 2px;
-  margin: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 8);
 }
 
 ._mainPreview {
-  position: relative;
   width: 100%;
   height: 100%;
-  min-height: 3rem;
   opacity: 1;
   // transition: all 0.05s ease-out;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   &.is--showingSlides {
     opacity: 0;
-  }
-
-  > ._noVisual {
-    // display: block;
-    // align-self: center;
-    // font-size: 0;
-    // line-height: 0;
   }
 }
 
@@ -370,10 +339,10 @@ export default {
   top: 0;
   right: 0;
   margin: 0px;
-  z-index: 10;
-  pointer-events: auto;
+  z-index: 1;
   color: transparent;
   stroke: var(--c-noir);
+  pointer-events: auto;
 
   &[data-isfav] {
     stroke: transparent;
