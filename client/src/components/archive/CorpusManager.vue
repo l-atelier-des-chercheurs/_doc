@@ -52,33 +52,13 @@
     />
 
     <!-- Add Community Modal -->
-    <BaseModal2
+    <CreateFolder
       v-if="show_add_community"
-      :title="$t('add_community')"
+      :modal_name="$t('add_community')"
+      path="folders"
       @close="show_add_community = false"
-    >
-      <div class="_addCommunityList">
-        <div
-          v-for="folder in available_folders_to_add"
-          :key="folder.$path"
-          class="_addCommunityItem"
-        >
-          <button
-            type="button"
-            class="u-button u-button_white _addCommunityItemButton"
-            @click="addCommunity(folder.$path)"
-          >
-            {{ folder.title || $t("untitled") }}
-          </button>
-        </div>
-        <div
-          v-if="available_folders_to_add.length === 0"
-          class="_noMoreCommunities"
-        >
-          {{ $t("no_more_communities") }}
-        </div>
-      </div>
-    </BaseModal2>
+      @openNew="onCommunityCreated"
+    />
 
     <!-- Remove Community Modal -->
     <RemoveMenu2
@@ -95,6 +75,7 @@
 <script>
 import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
 import CommunityPreview from "@/components/archive/CommunityPreview.vue";
+import CreateFolder from "@/adc-core/modals/CreateFolder.vue";
 
 export default {
   props: {
@@ -118,6 +99,7 @@ export default {
   components: {
     SharedFolder2,
     CommunityPreview,
+    CreateFolder,
   },
   data() {
     return {
@@ -323,6 +305,29 @@ export default {
         this.$emit("communitiesSelected", this.selected_folders);
       }
     },
+    async onCommunityCreated(new_folder_slug) {
+      // Add the newly created community to selected list
+      // const new_folder_path = `folders/${new_folder_slug}`;
+      // if (!this.selected_folders.includes(new_folder_path)) {
+      //   this.selected_folders.push(new_folder_path);
+      // }
+
+      this.show_add_community = false;
+
+      // if (this.use_query) {
+      //   // Update route query
+      //   const slugs = this.selected_folders.map((path) =>
+      //     path.split("/").pop()
+      //   );
+      //   this.$router.push({
+      //     path: this.$route.path,
+      //     query: { communities: slugs.join(",") },
+      //   });
+      // } else {
+      //   // Emit event for local state management
+      //   this.$emit("communitiesSelected", this.selected_folders);
+      // }
+    },
     addCommunity(folder_path) {
       // Add community to selected list if not already selected
       if (!this.selected_folders.includes(folder_path)) {
@@ -477,32 +482,6 @@ export default {
 }
 
 ._noCommunities {
-  padding: calc(var(--spacing) * 2);
-  text-align: center;
-  color: var(--h-600);
-  font-style: italic;
-}
-
-._addCommunityList {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 2);
-  max-height: 60vh;
-  overflow-y: auto;
-  padding: calc(var(--spacing) / 2);
-}
-
-._addCommunityItem {
-  display: flex;
-  flex-flow: row nowrap;
-}
-
-._addCommunityItemButton {
-  width: 100%;
-  justify-content: flex-start;
-}
-
-._noMoreCommunities {
   padding: calc(var(--spacing) * 2);
   text-align: center;
   color: var(--h-600);
