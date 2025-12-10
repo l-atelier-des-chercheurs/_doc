@@ -583,6 +583,7 @@ export default {
   position: sticky;
   top: 0;
   z-index: 10;
+  background: var(--body-bg);
   // font-size: var(--sl-font-sizelarge);
   font-weight: 800;
   padding: calc(var(--spacing) / 4);
