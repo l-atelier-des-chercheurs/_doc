@@ -425,7 +425,6 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  background-color: var(--h-50);
 }
 
 ._selectionView {
