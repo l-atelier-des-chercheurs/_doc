@@ -813,11 +813,21 @@ export default {
         max-width: 30ch;
       }
 
-      blockquote {
+      blockquote,
+      .ql-code-block-container {
         padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
         margin: calc(var(--spacing) * 1) 0;
         border: none;
         border-left: 2px solid var(--c-gris);
+      }
+
+      .ql-code-block-container {
+        border-color: transparent;
+        font-family: "Fira Code", monospace;
+
+        ::selection {
+          background-color: var(--c-gris_fonce);
+        }
       }
 
       pre.ql-syntax {

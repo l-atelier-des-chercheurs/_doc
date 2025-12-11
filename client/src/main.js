@@ -313,7 +313,6 @@ Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
-import "axios-debug-log/enable";
 import axios from "axios";
 const instance = axios.create({
   baseURL: window.location.origin + "/_api2",

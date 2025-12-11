@@ -125,7 +125,9 @@
                 <input
                   type="number"
                   min="1"
+                  step="1"
                   v-model.number="timelapse_interval"
+                  @keypress="preventNonInteger($event)"
                 />
                 <span>{{ $t("seconds") }}</span>
               </div>
@@ -146,8 +148,10 @@
                 <input
                   type="number"
                   v-model.number="delay_seconds"
+                  step="1"
                   min="1"
                   max="60"
+                  @keypress="preventNonInteger($event)"
                 />
                 <span>{{ $t("seconds") }}</span>
               </div>
@@ -1937,6 +1941,11 @@ export default {
     },
     cancelValidation() {
       this.media_to_validate = false;
+    },
+    preventNonInteger(event) {
+      if (event.key === "." || event.key === ",") {
+        event.preventDefault();
+      }
     },
   },
 };

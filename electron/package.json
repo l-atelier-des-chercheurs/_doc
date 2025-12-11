@@ -15,7 +15,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
-    "node": "22.19.0",
+    "node": "22.21.1",
     "npm": "*"
   },
   "electronmon": {
@@ -27,8 +27,8 @@
   "dependencies": {},
   "devDependencies": {
     "@electron/rebuild": "^4.0.1",
-    "electron": "^37.6.1",
+    "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
-    "electronmon": "^2.0.3"
+    "electronmon": "^2.0.4"
   }
 }
