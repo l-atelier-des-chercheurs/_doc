@@ -218,7 +218,7 @@ export default {
   --color-publish: var(--c-bleuvert);
 
   --indicator-color: var(--c-vert) !important;
-  --active-color: var(--r-500);
+  --active-color: var(--g-400);
 
   --sl-font-sans: "Archivo", sans-serif;
   --sl-font-serif: "IBM Plex Serif", serif;
@@ -368,32 +368,32 @@ button {
 }
 
 .u-inputBorder {
-  --inputcol: var(--h-500);
+  --inputcol: var(--g-500);
 
   display: flex;
   flex-flow: row nowrap;
   border: 1px solid var(--inputcol);
-  border-radius: 4px;
+  border-radius: 20px;
+  overflow: hidden;
   // max-width: 420px;
 
   ._prefix,
   ._suffix {
     display: flex;
-    padding: 0.3rem 1rem 0.3rem;
-    background: var(--inputcol);
-    color: var(--h-200);
+    padding: 0.3rem 0.5rem 0.3rem 1rem;
+    background: transparent;
 
     transition: all 0.1s;
   }
 
   &:has(input:focus-visible) {
-    --inputcol: var(--h-700);
+    --inputcol: var(--g-700);
   }
 
   input {
-    background: transparent;
+    background: transparent !important;
     border: none !important;
-    color: var(--h-700);
+    color: var(--g-700);
 
     &::placeholder {
       font-style: italic;

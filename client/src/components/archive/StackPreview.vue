@@ -357,7 +357,7 @@ export default {
 
   &[data-isfav] {
     stroke: transparent;
-    color: var(--active-color);
+    color: var(--c-orange);
   }
 
   svg {

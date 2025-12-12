@@ -1,15 +1,5 @@
 <template>
   <div class="_sharedFolder">
-    <ArchiveTopBar
-      :all_folders="all_folders"
-      :active_folder_paths="active_folder_paths"
-      :search_str.sync="search_str"
-      :show_filter_bar.sync="show_filter_bar"
-      :stack_preview_width.sync="stack_preview_width"
-      :view_mode.sync="view_mode"
-      @toggleCorpus="toggleCorpus"
-    />
-
     <transition name="scaleInFade" mode="out-in">
       <StackDisplay
         v-if="opened_stack"
@@ -37,6 +27,7 @@
       <TwoColumnLayout
         v-else
         :show-sidebar.sync="show_filter_bar"
+        :show-toggle-button="false"
         class="_sharedFolder--content"
       >
         <template #sidebar>
@@ -51,6 +42,16 @@
         </template>
 
         <template #content>
+          <ArchiveTopBar
+            :all_folders="all_folders"
+            :active_folder_paths="active_folder_paths"
+            :search_str.sync="search_str"
+            :show_filter_bar.sync="show_filter_bar"
+            :stack_preview_width.sync="stack_preview_width"
+            :view_mode.sync="view_mode"
+            @toggleCorpus="toggleCorpus"
+          />
+
           <transition name="fade" mode="out-in">
             <div class="_stacksList" :key="sort_order + '-' + group_mode">
               <div
@@ -153,7 +154,7 @@ export default {
       last_selected_stack_path: undefined,
       view_mode: localStorage.getItem("archive.view_mode") || "list",
 
-      sort_order: localStorage.getItem("archive.sort_order") || "date_modified",
+      sort_order: localStorage.getItem("archive.sort_order") || "date_created",
 
       search_str: localStorage.getItem("archive.search_str") || "",
       author_path_filter:
@@ -453,7 +454,7 @@ export default {
       query.stack = stack_slug;
       // If a slide index is provided, include it in the URL
       if (slideIndex !== undefined && slideIndex !== null) {
-        query.slide = slideIndex.toString();
+        query.slide = (slideIndex + 1).toString();
       }
       this.$router.push({ query });
     },

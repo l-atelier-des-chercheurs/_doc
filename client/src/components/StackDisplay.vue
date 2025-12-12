@@ -141,6 +141,16 @@
                   :can_edit="can_edit"
                 />
               </div>
+              <div class="u-spacingBottom">
+                <AuthorField
+                  :label="$t('authors') + '(legacy)'"
+                  :field="'$authors'"
+                  :instructions="$t('media_editing_instructions')"
+                  :authors_paths="stack.$admins"
+                  :path="stack.$path"
+                  :can_edit="can_edit"
+                />
+              </div>
 
               <div class="" v-if="is_instance_admin">
                 <StatusTag

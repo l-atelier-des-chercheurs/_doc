@@ -125,7 +125,7 @@ export default {
 
     // Initialize from URL query parameter
     if (this.$route.query.slide !== undefined) {
-      const slideIndex = parseInt(this.$route.query.slide, 10);
+      const slideIndex = parseInt(this.$route.query.slide, 10) - 1;
       if (
         !isNaN(slideIndex) &&
         slideIndex >= 0 &&
@@ -148,7 +148,7 @@ export default {
       // Update URL query parameter when slide index changes
       if (newIndex !== false && newIndex !== null && newIndex !== undefined) {
         const query = { ...this.$route.query };
-        query.slide = newIndex.toString();
+        query.slide = (newIndex + 1).toString();
         this.$router.replace({ query }).catch(() => {});
       }
 
@@ -168,7 +168,7 @@ export default {
     "$route.query.slide"(newSlide) {
       // Sync with URL changes (e.g., browser back/forward)
       if (newSlide !== undefined) {
-        const slideIndex = parseInt(newSlide, 10);
+        const slideIndex = parseInt(newSlide, 10) - 1;
         if (
           !isNaN(slideIndex) &&
           slideIndex >= 0 &&

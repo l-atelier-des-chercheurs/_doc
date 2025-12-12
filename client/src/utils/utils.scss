@@ -246,7 +246,7 @@ button {
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
-      color: var(--r-900);
+      color: var(--g-900);
       outline: 0;
       background: var(--active-color);
     }
