@@ -220,9 +220,9 @@ export default {
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--r-500);
 
-  --sl-font-sans: "Archivo";
-  --sl-font-serif: "IBM Plex Serif";
-  --sl-font-mono: "IBM Plex Mono";
+  --sl-font-sans: "Archivo", sans-serif;
+  --sl-font-serif: "IBM Plex Serif", serif;
+  --sl-font-mono: "IBM Plex Mono", monospace;
 
   --padding: var(--spacing);
 
