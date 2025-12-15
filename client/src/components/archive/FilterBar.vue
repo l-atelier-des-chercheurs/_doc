@@ -4,26 +4,43 @@
 
     <transition name="pagechange">
       <div class="_filterPane">
-        <!-- <button
-          type="button"
-          class="u-buttonLink _closeBtn"
-          :class="{
-            'is--white': can_be_reset,
-          }"
-          @click="$emit('close')"
-        >
-          <b-icon icon="x-lg" />
-        </button> -->
-        <div class="u-sameRow _filterPane--row">
-          <select
-            class="_selectField"
-            :value="sort_order"
-            @change="$emit('update:sort_order', $event.target.value)"
+        <div class="_topRow">
+          <h2 class="_filterTitle">{{ $t("filters") }}</h2>
+          <button
+            type="button"
+            class="u-buttonLink _closeBtn"
+            @click="$emit('close')"
           >
-            <option value="date_modified" v-text="$t('date_modified')" />
-            <option value="date_created" v-text="$t('date_created')" />
-          </select>
+            <b-icon icon="x" />
+          </button>
+        </div>
 
+        <div class="_filterSection">
+          <div class="_sectionTitle">{{ $t("sort_by") }}</div>
+          <div class="_radioGroup">
+            <label class="_radioLabel">
+              <input
+                type="radio"
+                value="date_modified"
+                :checked="sort_order === 'date_modified'"
+                @change="$emit('update:sort_order', 'date_modified')"
+              />
+              <span class="_radioText">{{ $t("date_modified") }}</span>
+            </label>
+            <label class="_radioLabel">
+              <input
+                type="radio"
+                value="date_created"
+                :checked="sort_order === 'date_created'"
+                @change="$emit('update:sort_order', 'date_created')"
+              />
+              <span class="_radioText">{{ $t("date_created") }}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="_filterSection">
+          <div class="_sectionTitle">{{ $t("group_by_date") }}</div>
           <select
             class="_selectField"
             :value="group_mode"
@@ -38,7 +55,8 @@
           </select>
         </div>
 
-        <div class="_filterPane--row">
+        <div class="_filterSection">
+          <div class="_sectionTitle">{{ $t("filter_by_author") }}</div>
           <select
             class="_selectField"
             :value="author_path_filter"
@@ -54,19 +72,24 @@
           </select>
         </div>
 
-        <div class="_filterPane--row">
+        <div class="_filterSection">
           <div class="_tag">
             <DLabel :str="$t('filter_by_keyword')" />
+            <input
+              type="text"
+              class="_searchField"
+              :placeholder="$t('search')"
+              v-model="keyword_search"
+            />
 
-            <details
+            <div
               v-for="category in keywords_by_category"
               :key="category.type"
               class="_keywordCategory"
-              :open="isCategoryExpanded(category.type)"
             >
-              <summary class="_categoryHeader">
+              <div class="_categoryHeader">
                 {{ category.type }}
-              </summary>
+              </div>
               <div class="_keywordCheckboxes">
                 <label
                   v-for="keyword in displayedKeywords(category)"
@@ -110,7 +133,7 @@
                   />
                 </button>
               </div>
-            </details>
+            </div>
           </div>
         </div>
       </div>
@@ -144,6 +167,7 @@ export default {
   data() {
     return {
       all_authors: [],
+      keyword_search: "",
       expanded_categories: {},
       initial_keywords_limit: 5,
 
@@ -225,6 +249,16 @@ export default {
 
       // available_keywords already contains only valid keywords (computed in parent)
       this.available_keywords.forEach((kw) => {
+        const keyword_name = this.getKeywordName(kw.title);
+        if (
+          this.keyword_search &&
+          !keyword_name
+            .toLowerCase()
+            .includes(this.keyword_search.toLowerCase())
+        ) {
+          return;
+        }
+
         const category = this.getKeywordCategory(kw.title);
         const categoryKey = category || "OTHER";
 
@@ -243,11 +277,12 @@ export default {
         .sort()
         .map((key) => ({
           type: key,
-          keywords: categories[key].keywords.sort((a, b) =>
-            this.getKeywordName(a.title).localeCompare(
+          keywords: categories[key].keywords.sort((a, b) => {
+            if (b.count !== a.count) return b.count - a.count;
+            return this.getKeywordName(a.title).localeCompare(
               this.getKeywordName(b.title)
-            )
-          ),
+            );
+          }),
         }));
     },
     can_be_reset() {
@@ -265,6 +300,7 @@ export default {
       this.$emit("update:sort_order", "date_modified");
       this.$emit("update:author_path_filter", "");
       this.$emit("update:keywords_filter", []);
+      this.keyword_search = "";
     },
     getKeywordCategory(keyword) {
       return keyword.includes("/") ? keyword.split("/")[0] : null;
@@ -308,12 +344,16 @@ export default {
       return category?.tag_color;
     },
     displayedKeywords(category) {
-      if (this.isCategoryExpanded(category.type)) {
+      if (
+        this.isCategoryExpanded(category.type) ||
+        this.keyword_search.length > 0
+      ) {
         return category.keywords;
       }
       return category.keywords.slice(0, this.initial_keywords_limit);
     },
     shouldShowMoreButton(category) {
+      if (this.keyword_search.length > 0) return false;
       return category.keywords.length > this.initial_keywords_limit;
     },
     isCategoryExpanded(categoryType) {
@@ -333,76 +373,126 @@ export default {
 ._filterBar {
   position: relative;
   z-index: 1;
-  // padding: calc(var(--spacing) / 1);
-  // height: 100%;
-  // overflow: auto;
+  height: 100%;
+  overflow-y: auto;
+  // padding: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 4);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
-
-  // select,
-  // input {
-  //   &:not(.is--dark) {
-  //     background-color: white;
-  //   }
-  // }
 }
 
-._topBtn {
+._topRow {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) * 1);
-
-  > * {
-    flex: 0 0 auto;
-  }
+  margin-bottom: calc(var(--spacing) * 1);
 }
 
-._filterPane {
+._filterTitle {
+  font-family: var(--font-title);
+  font-weight: 600;
+  margin: 0;
+  color: var(--c-noir);
 }
 
-._filterPane--row {
-  // display: flex;
-  // flex-flow: column nowrap;
-  // gap: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) / 2);
-
-  > * {
-    flex: 1 1 100px;
-  }
-}
-
-._usedKw {
-  padding-bottom: calc(var(--spacing) / 2);
-  border-bottom: 2px solid white;
-  margin-bottom: calc(var(--spacing) / 2);
-}
-
-._resetFilters {
-  text-align: center;
-  padding: calc(var(--spacing) / 2);
-}
 ._closeBtn {
-  position: absolute;
-  right: 0;
-  margin: calc(var(--spacing) / 2);
-  z-index: 100;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--c-noir);
+  padding: 0;
 
-  &.is--white {
-    color: white;
+  &:hover {
+    color: var(--c-rouge);
+  }
+}
+
+._filterSection {
+  margin-bottom: calc(var(--spacing) * 1.5);
+}
+
+._sectionTitle {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: calc(var(--spacing) / 2);
+  color: var(--c-gris-fonce);
+}
+
+._radioGroup {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 4);
+}
+
+._radioLabel {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+
+  input[type="radio"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--c-gris);
+    border-radius: 50%;
+    outline: none;
+    margin: 0;
+    position: relative;
+
+    &:checked {
+      border-color: var(--c-noir);
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--c-noir);
+      }
+    }
+  }
+
+  ._radioText {
+    color: var(--c-noir);
+  }
+
+  &:hover ._radioText {
+    text-decoration: underline;
   }
 }
 
 ._selectField {
-  border: 1px solid var(--h-500);
+  width: 100%;
+  border: 1px solid var(--c-gris);
   border-radius: 4px;
-  // max-width: 420px;
-  // min-width: 20ch;
-  color: var(--h-700);
-
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  color: var(--c-noir);
   background-color: transparent;
+  font-family: var(--font-sans);
+}
+
+._searchField {
+  width: 100%;
+  border: 1px solid var(--c-gris);
+  border-radius: 4px;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) * 1);
+  color: var(--c-noir);
+  background-color: transparent;
+  font-family: var(--font-sans);
+
+  &:focus {
+    outline: none;
+    border-color: var(--c-noir);
+  }
 }
 
 ._keywordCategory {
@@ -411,22 +501,13 @@ export default {
 
 ._categoryHeader {
   position: sticky;
-  // padding: calc(var(--spacing) / 2) 0;
-  // margin-bottom: calc(var(--spacing) / 2);
   font-weight: 600;
-  // font-size: var(--sl-font-size-small);
-  // text-transform: uppercase;
-  // color: var(--h-700);
-  // border-radius: 4px;
-  // padding-left: calc(var(--spacing) / 2);
-  // padding-right: calc(var(--spacing) / 2);
 }
 
 ._keywordCheckboxes {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 4);
-  // overflow-x: hidden;
 }
 
 ._showMoreButton {
@@ -450,11 +531,16 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
   cursor: pointer;
-  // padding: calc(var(--spacing) / 4) 0;
 
   input[type="checkbox"] {
     cursor: pointer;
     flex: 0 0 auto;
   }
+}
+
+._resetFilters {
+  text-align: center;
+  padding: calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) * 2);
 }
 </style>
