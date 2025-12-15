@@ -1,143 +1,137 @@
 <template>
   <div class="_filterBar">
-    <slot name="top" />
+    <div class="_filterPane">
+      <div class="_topRow">
+        <h2 class="_filterTitle">{{ $t("filters") }}</h2>
+        <button
+          type="button"
+          class="u-buttonLink _closeBtn"
+          @click="$emit('close')"
+        >
+          <b-icon icon="x" />
+        </button>
+      </div>
 
-    <transition name="pagechange">
-      <div class="_filterPane">
-        <div class="_topRow">
-          <h2 class="_filterTitle">{{ $t("filters") }}</h2>
-          <button
-            type="button"
-            class="u-buttonLink _closeBtn"
-            @click="$emit('close')"
-          >
-            <b-icon icon="x" />
-          </button>
-        </div>
-
-        <div class="_filterSection">
-          <div class="_sectionTitle">{{ $t("sort_by") }}</div>
-          <div class="_radioGroup">
-            <label class="_radioLabel">
-              <input
-                type="radio"
-                value="date_modified"
-                :checked="sort_order === 'date_modified'"
-                @change="$emit('update:sort_order', 'date_modified')"
-              />
-              <span class="_radioText">{{ $t("date_modified") }}</span>
-            </label>
-            <label class="_radioLabel">
-              <input
-                type="radio"
-                value="date_created"
-                :checked="sort_order === 'date_created'"
-                @change="$emit('update:sort_order', 'date_created')"
-              />
-              <span class="_radioText">{{ $t("date_created") }}</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="_filterSection">
-          <div class="_sectionTitle">{{ $t("group_by_date") }}</div>
-          <select
-            class="_selectField"
-            :value="group_mode"
-            @change="$emit('update:group_mode', $event.target.value)"
-          >
-            <option
-              v-for="group_option in group_options"
-              :key="group_option.key"
-              :value="group_option.key"
-              v-text="group_option.label"
-            />
-          </select>
-        </div>
-
-        <div class="_filterSection">
-          <div class="_sectionTitle">{{ $t("filter_by_author") }}</div>
-          <select
-            class="_selectField"
-            :value="author_path_filter"
-            @change="$emit('update:author_path_filter', $event.target.value)"
-          >
-            <option value="" v-text="$t('none')" />
-            <option
-              v-for="author in all_authors"
-              :key="author.$path"
-              :value="author.$path"
-              v-text="author.name"
-            />
-          </select>
-        </div>
-
-        <div class="_filterSection">
-          <div class="_tag">
-            <DLabel :str="$t('filter_by_keyword')" />
+      <div class="_filterSection">
+        <div class="_sectionTitle">{{ $t("sort_by") }}</div>
+        <div class="_radioGroup">
+          <label class="_radioLabel">
             <input
-              type="text"
-              class="_searchField"
-              :placeholder="$t('search')"
-              v-model="keyword_search"
+              type="radio"
+              value="date_modified"
+              :checked="sort_order === 'date_modified'"
+              @change="$emit('update:sort_order', 'date_modified')"
             />
+            <span class="_radioText">{{ $t("date_modified") }}</span>
+          </label>
+          <label class="_radioLabel">
+            <input
+              type="radio"
+              value="date_created"
+              :checked="sort_order === 'date_created'"
+              @change="$emit('update:sort_order', 'date_created')"
+            />
+            <span class="_radioText">{{ $t("date_created") }}</span>
+          </label>
+        </div>
+      </div>
 
-            <div
-              v-for="category in keywords_by_category"
-              :key="category.type"
-              class="_keywordCategory"
-            >
-              <div class="_categoryHeader">
-                {{ category.type }}
-              </div>
-              <div class="_keywordCheckboxes">
-                <label
-                  v-for="keyword in displayedKeywords(category)"
-                  :key="keyword.title"
-                  class="u-keywords _keywordCheckbox"
-                >
-                  <input
-                    type="checkbox"
-                    :checked="isKeywordSelected(keyword.title)"
-                    @change="
-                      toggleKeyword(keyword.title, $event.target.checked)
-                    "
-                  />
-                  <SingleKeyword
-                    :keyword="keyword.title"
-                    :show_category="false"
-                    :count="keyword.count"
-                    :cat_color="getCategoryColor(category.type)"
-                  />
-                </label>
-                <button
-                  v-if="shouldShowMoreButton(category)"
-                  type="button"
-                  class="u-buttonLink _showMoreButton"
-                  @click="toggleCategoryExpansion(category.type)"
-                >
-                  <template v-if="!isCategoryExpanded(category.type)">
-                    {{ $t("show_more") }} ({{
-                      category.keywords.length - initial_keywords_limit
-                    }})
-                  </template>
-                  <template v-else>
-                    {{ $t("show_less") }}
-                  </template>
-                  <b-icon
-                    :icon="
-                      isCategoryExpanded(category.type)
-                        ? 'chevron-up'
-                        : 'chevron-down'
-                    "
-                  />
-                </button>
-              </div>
+      <div class="_filterSection">
+        <div class="_sectionTitle">{{ $t("group_by_date") }}</div>
+        <select
+          class="_selectField"
+          :value="group_mode"
+          @change="$emit('update:group_mode', $event.target.value)"
+        >
+          <option
+            v-for="group_option in group_options"
+            :key="group_option.key"
+            :value="group_option.key"
+            v-text="group_option.label"
+          />
+        </select>
+      </div>
+
+      <div class="_filterSection">
+        <div class="_sectionTitle">{{ $t("filter_by_author") }}</div>
+        <select
+          class="_selectField"
+          :value="author_path_filter"
+          @change="$emit('update:author_path_filter', $event.target.value)"
+        >
+          <option value="" v-text="$t('none')" />
+          <option
+            v-for="author in all_authors"
+            :key="author.$path"
+            :value="author.$path"
+            v-text="author.name"
+          />
+        </select>
+      </div>
+
+      <div class="_filterSection">
+        <div class="_tag">
+          <DLabel :str="$t('filter_by_keyword')" />
+          <input
+            type="text"
+            class="_searchField"
+            :placeholder="$t('search')"
+            v-model="keyword_search"
+          />
+
+          <div
+            v-for="category in keywords_by_category"
+            :key="category.type"
+            class="_keywordCategory"
+          >
+            <div class="_categoryHeader">
+              {{ category.type }}
+            </div>
+            <div class="_keywordCheckboxes">
+              <label
+                v-for="keyword in displayedKeywords(category)"
+                :key="keyword.title"
+                class="u-keywords _keywordCheckbox"
+              >
+                <input
+                  type="checkbox"
+                  :checked="isKeywordSelected(keyword.title)"
+                  @change="toggleKeyword(keyword.title, $event.target.checked)"
+                />
+                <SingleKeyword
+                  :keyword="keyword.title"
+                  :show_category="false"
+                  :count="keyword.count"
+                  :cat_color="getCategoryColor(category.type)"
+                />
+              </label>
+              <button
+                v-if="shouldShowMoreButton(category)"
+                type="button"
+                class="u-buttonLink _showMoreButton"
+                @click="toggleCategoryExpansion(category.type)"
+              >
+                <template v-if="!isCategoryExpanded(category.type)">
+                  {{ $t("show_more") }} ({{
+                    category.keywords.length - initial_keywords_limit
+                  }})
+                </template>
+                <template v-else>
+                  {{ $t("show_less") }}
+                </template>
+                <b-icon
+                  :icon="
+                    isCategoryExpanded(category.type)
+                      ? 'chevron-up'
+                      : 'chevron-down'
+                  "
+                />
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </transition>
+    </div>
     <div class="_resetFilters" v-if="can_be_reset">
       <button
         type="button"
@@ -374,11 +368,18 @@ export default {
   position: relative;
   z-index: 1;
   height: 100%;
-  overflow-y: auto;
-  // padding: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 4);
+  display: flex;
+  flex-direction: column;
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
+}
+
+._filterPane {
+  flex: 1 1 auto;
+  overflow-y: auto;
+
+  padding: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 4);
 }
 
 ._topRow {
@@ -539,8 +540,11 @@ export default {
 }
 
 ._resetFilters {
+  flex: 0 0 auto;
   text-align: center;
   padding: calc(var(--spacing) / 2);
-  margin-top: calc(var(--spacing) * 2);
+  margin-top: auto;
+  background-color: white;
+  border-top: 1px solid var(--c-gris);
 }
 </style>

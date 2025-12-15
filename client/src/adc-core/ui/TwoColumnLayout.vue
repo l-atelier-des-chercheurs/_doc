@@ -142,7 +142,7 @@ export default {
 }
 
 ._twoColumnLayout ._colLeft {
-  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+  // padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
 }
 
 ._twoColumnLayout.is--sidebarHidden {

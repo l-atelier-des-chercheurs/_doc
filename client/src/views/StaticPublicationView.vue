@@ -75,6 +75,8 @@ export default {
 
     let superadmintoken = undefined;
     if (this.$route.query?.sat) superadmintoken = this.$route.query.sat;
+    if (this.$route.query?.superadmintoken)
+      superadmintoken = this.$route.query.superadmintoken;
 
     this.collection = await this.$api
       .getPublicFolder({

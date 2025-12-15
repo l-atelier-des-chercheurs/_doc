@@ -5,85 +5,87 @@
     @click="last_clicked = false"
   >
     <template #sidebar>
-      <h3 class="_dashboard--label">{{ $t("dashboard") }}</h3>
-      <div class="u-spacingBottom" />
-      <div class="u-instructions u-spacingBottom">
-        <b-icon icon="info-circle" />
-        {{ $t("imported_docs") }}
-      </div>
-
-      <hr />
-
-      <div class="_stats" v-if="chutier_items.length > 0">
-        <div class="_statLine">
-          <b-icon icon="text-left" />
-          {{
-            $t("files_with_caption", {
-              percentage: files_with_caption_percentage,
-            })
-          }}
-        </div>
-        <div class="_progressBar">
-          <div
-            class="_progressFill"
-            :style="{ width: files_with_caption_percentage + '%' }"
-          ></div>
-        </div>
-      </div>
-
-      <div class="_stats" v-if="chutier_items.length > 0">
-        <div class="_statLine">
+      <div class="_sidebarContent">
+        <h3 class="_dashboard--label">{{ $t("dashboard") }}</h3>
+        <div class="u-spacingBottom" />
+        <div class="u-instructions u-spacingBottom">
           <b-icon icon="info-circle" />
-          {{
-            $t("files_with_credits", {
-              percentage: files_with_credits_percentage,
-            })
-          }}
+          {{ $t("imported_docs") }}
         </div>
-        <div class="_progressBar">
-          <div
-            class="_progressFill"
-            :style="{ width: files_with_credits_percentage + '%' }"
-          ></div>
+
+        <hr />
+
+        <div class="_stats" v-if="chutier_items.length > 0">
+          <div class="_statLine">
+            <b-icon icon="text-left" />
+            {{
+              $t("files_with_caption", {
+                percentage: files_with_caption_percentage,
+              })
+            }}
+          </div>
+          <div class="_progressBar">
+            <div
+              class="_progressFill"
+              :style="{ width: files_with_caption_percentage + '%' }"
+            ></div>
+          </div>
         </div>
-      </div>
 
-      <div class="_importSection">
-        <div class="_importButton">
-          <ImportFileZone
-            :multiple="true"
-            :files_to_import.sync="files_to_import"
-          />
-          <UploadFiles
-            v-if="files_to_import.length > 0"
-            :files_to_import="files_to_import"
-            :path="author_path"
-            :allow_caption_edition="true"
-            @importedMedias="mediaJustImported($event)"
-            @close="files_to_import = []"
-          />
+        <div class="_stats" v-if="chutier_items.length > 0">
+          <div class="_statLine">
+            <b-icon icon="info-circle" />
+            {{
+              $t("files_with_credits", {
+                percentage: files_with_credits_percentage,
+              })
+            }}
+          </div>
+          <div class="_progressBar">
+            <div
+              class="_progressFill"
+              :style="{ width: files_with_credits_percentage + '%' }"
+            ></div>
+          </div>
+        </div>
 
-          <div class="_importBtns">
-            <button
-              type="button"
-              class="u-button u-button_outline"
-              @click="createNote"
-            >
-              <b-icon icon="file-text" />note
-            </button>
-
-            <button
-              type="button"
-              class="u-button u-button_outline"
-              @click="show_link_picker = true"
-            >
-              <b-icon icon="link-45deg" scale="1.4" />url
-            </button>
-            <EmbedPicker
-              v-if="show_link_picker"
-              @embed="createEmbed"
-              @close="show_link_picker = false"
+        <div class="_importSection">
+          <div class="_importButton">
+            <ImportFileZone
+              :multiple="true"
+              :files_to_import.sync="files_to_import"
             />
+            <UploadFiles
+              v-if="files_to_import.length > 0"
+              :files_to_import="files_to_import"
+              :path="author_path"
+              :allow_caption_edition="true"
+              @importedMedias="mediaJustImported($event)"
+              @close="files_to_import = []"
+            />
+
+            <div class="_importBtns">
+              <button
+                type="button"
+                class="u-button u-button_outline"
+                @click="createNote"
+              >
+                <b-icon icon="file-text" />note
+              </button>
+
+              <button
+                type="button"
+                class="u-button u-button_outline"
+                @click="show_link_picker = true"
+              >
+                <b-icon icon="link-45deg" scale="1.4" />url
+              </button>
+              <EmbedPicker
+                v-if="show_link_picker"
+                @embed="createEmbed"
+                @close="show_link_picker = false"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -556,6 +558,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._sidebarContent {
+  padding: calc(var(--spacing) * 2);
+}
+
 ._importSection {
   margin-top: calc(var(--spacing) * 2);
 }

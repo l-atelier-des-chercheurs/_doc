@@ -530,6 +530,7 @@ export default {
   flex-flow: column nowrap;
   height: 100%;
   background: var(--sd-bg);
+  padding: calc(var(--spacing) * 2);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 

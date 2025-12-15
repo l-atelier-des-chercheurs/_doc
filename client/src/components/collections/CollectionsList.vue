@@ -1,55 +1,60 @@
 <template>
   <TwoColumnLayout :show-sidebar.sync="show_create_bar">
     <template #sidebar>
-      <h3 class="_dashboard--label">{{ $t("publications") }}</h3>
-      <div class="u-spacingBottom" />
-      <div class="u-instructions u-spacingBottom">
-        {{ $t("publication_instr") }}
-      </div>
+      <div class="_sidebarContent">
+        <h3 class="_dashboard--label">{{ $t("publications") }}</h3>
+        <div class="u-spacingBottom" />
+        <div class="u-instructions u-spacingBottom">
+          {{ $t("publication_instr") }}
+        </div>
 
-      <hr />
+        <hr />
 
-      <div class="_createActions">
-        <h3 class="_createActions_label" v-text="$t('create_a_publication')" />
-
-        <button
-          class="u-button u-button_outline _createAction"
-          @click="show_create_collection = 'story_with_sections'"
-        >
-          <b-icon icon="plus-circle" />
-          <span v-text="$t('new_story')"></span>
-          <img :src="$root.publicPath + 'picto_luma/story.svg'" alt="story" />
-        </button>
-        <button
-          class="u-button u-button_outline _createAction"
-          @click="show_create_collection = 'edition'"
-        >
-          <b-icon icon="plus-circle" />
-          <span v-text="$t('new_booklet')"></span>
-          <img
-            :src="$root.publicPath + 'picto_luma/edition.svg'"
-            alt="booklet"
+        <div class="_createActions">
+          <h3
+            class="_createActions_label"
+            v-text="$t('create_a_publication')"
           />
-        </button>
-        <button
-          class="u-button u-button_outline _createAction"
-          @click="show_create_collection = 'agora'"
-        >
-          <b-icon icon="plus-circle" />
-          <span v-text="$t('new_agora')"></span>
-          <img :src="$root.publicPath + 'picto_luma/agora.svg'" alt="agora" />
-        </button>
-      </div>
 
-      <CreateCollection
-        v-if="show_create_collection"
-        :modal_name="$t('create_a_publication')"
-        :path="'publications'"
-        :default_folder_status="'private'"
-        :selected_template="show_create_collection"
-        @close="show_create_collection = false"
-        @openNew="openNewCollection"
-      />
+          <button
+            class="u-button u-button_outline _createAction"
+            @click="show_create_collection = 'story_with_sections'"
+          >
+            <b-icon icon="plus-circle" />
+            <span v-text="$t('new_story')"></span>
+            <img :src="$root.publicPath + 'picto_luma/story.svg'" alt="story" />
+          </button>
+          <button
+            class="u-button u-button_outline _createAction"
+            @click="show_create_collection = 'edition'"
+          >
+            <b-icon icon="plus-circle" />
+            <span v-text="$t('new_booklet')"></span>
+            <img
+              :src="$root.publicPath + 'picto_luma/edition.svg'"
+              alt="booklet"
+            />
+          </button>
+          <button
+            class="u-button u-button_outline _createAction"
+            @click="show_create_collection = 'agora'"
+          >
+            <b-icon icon="plus-circle" />
+            <span v-text="$t('new_agora')"></span>
+            <img :src="$root.publicPath + 'picto_luma/agora.svg'" alt="agora" />
+          </button>
+        </div>
+
+        <CreateCollection
+          v-if="show_create_collection"
+          :modal_name="$t('create_a_publication')"
+          :path="'publications'"
+          :default_folder_status="'private'"
+          :selected_template="show_create_collection"
+          @close="show_create_collection = false"
+          @openNew="openNewCollection"
+        />
+      </div>
     </template>
 
     <template #content nopadding="true">
@@ -245,6 +250,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._sidebarContent {
+  padding: calc(var(--spacing) * 2);
+}
+
 ._createActions {
   margin-top: calc(var(--spacing) * 1);
 
