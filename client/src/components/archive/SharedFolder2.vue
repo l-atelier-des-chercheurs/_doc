@@ -427,22 +427,17 @@ export default {
 
       const stackQuery = this.$route.query.stack;
 
-      // Check if stack query includes community name (format: {community}_{stack-slug})
-      if (stackQuery.includes("_")) {
-        const [community, stack_slug] = stackQuery.split("_");
-        return this.all_stacks.find((s) => {
-          const stackCommunity = this.getCommunity(s.$path);
-          return (
-            stackCommunity === community &&
-            this.getFilename(s.$path) === stack_slug
-          );
-        });
-      } else {
-        // Fallback to old format (just stack slug) for backward compatibility
-        return this.all_stacks.find(
-          (s) => this.getFilename(s.$path) === stackQuery
+      // Stack query must include community name (format: {community}_{stack-slug})
+      if (!stackQuery.includes("_")) return false;
+
+      const [community, stack_slug] = stackQuery.split("_");
+      return this.all_stacks.find((s) => {
+        const stackCommunity = this.getCommunity(s.$path);
+        return (
+          stackCommunity === community &&
+          this.getFilename(s.$path) === stack_slug
         );
-      }
+      });
     },
   },
   methods: {
@@ -472,37 +467,22 @@ export default {
     toggleMediaFocus(path) {
       // Extract community and stack slug from the full stack path
       const community = this.getCommunity(path);
-      if (community) {
-        const stack_slug = this.getFilename(path);
-        // Open stack with community info in format: {community}_{stack-slug}
-        const query = Object.assign({}, this.$route.query) || {};
-        query.stack = `${community}_${stack_slug}`;
-        this.$router.push({ query });
-      } else {
-        // Fallback to old method
-        const slug = this.getFilename(path);
-        this.openStack(slug);
-      }
+      if (!community) return;
+
+      const stack_slug = this.getFilename(path);
+      // Open stack with community info in format: {community}_{stack-slug}
+      const query = Object.assign({}, this.$route.query) || {};
+      query.stack = `${community}_${stack_slug}`;
+      this.$router.push({ query });
     },
-    openStack(stack_slug, slideIndex) {
+    openStack(stack_path, slideIndex) {
       let query = Object.assign({}, this.$route.query) || {};
 
-      // Find the stack to get its full path and extract community name
-      const stack = this.all_stacks.find(
-        (s) => this.getFilename(s.$path) === stack_slug
-      );
+      // Extract community name from stack path
+      const community = this.getCommunity(stack_path);
+      if (!community) return;
 
-      if (stack) {
-        // Extract community name from stack path
-        const community = this.getCommunity(stack.$path);
-        if (community) {
-          query.stack = `${community}_${stack_slug}`;
-        } else {
-          query.stack = stack_slug;
-        }
-      } else {
-        query.stack = stack_slug;
-      }
+      query.stack = `${community}_${this.getFilename(stack_path)}`;
 
       // If a slide index is provided, include it in the URL
       if (slideIndex !== undefined && slideIndex !== null) {
