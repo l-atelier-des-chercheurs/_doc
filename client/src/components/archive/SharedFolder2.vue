@@ -424,12 +424,36 @@ export default {
     },
     opened_stack() {
       if (!this.$route.query?.stack) return false;
-      return this.all_stacks.find(
-        (s) => this.getFilename(s.$path) === this.$route.query.stack
-      );
+
+      const stackQuery = this.$route.query.stack;
+
+      // Check if stack query includes community name (format: {community}_{stack-slug})
+      if (stackQuery.includes("_")) {
+        const [community, stack_slug] = stackQuery.split("_");
+        return this.all_stacks.find((s) => {
+          const stackCommunity = this.getCommunity(s.$path);
+          return (
+            stackCommunity === community &&
+            this.getFilename(s.$path) === stack_slug
+          );
+        });
+      } else {
+        // Fallback to old format (just stack slug) for backward compatibility
+        return this.all_stacks.find(
+          (s) => this.getFilename(s.$path) === stackQuery
+        );
+      }
     },
   },
   methods: {
+    getCommunity(path) {
+      // Extract community name from path (folders/{community}/stacks/{stack-slug})
+      const pathParts = path.split("/");
+      const communityIndex = pathParts.indexOf("folders");
+      return communityIndex !== -1 && pathParts[communityIndex + 1]
+        ? pathParts[communityIndex + 1]
+        : null;
+    },
     async checkExistingFolder() {
       // Load all folders
       this.all_folders = await this.$api.getFolders({ path: "folders" });
@@ -446,12 +470,40 @@ export default {
       }
     },
     toggleMediaFocus(path) {
-      const slug = this.getFilename(path);
-      this.openStack(slug);
+      // Extract community and stack slug from the full stack path
+      const community = this.getCommunity(path);
+      if (community) {
+        const stack_slug = this.getFilename(path);
+        // Open stack with community info in format: {community}_{stack-slug}
+        const query = Object.assign({}, this.$route.query) || {};
+        query.stack = `${community}_${stack_slug}`;
+        this.$router.push({ query });
+      } else {
+        // Fallback to old method
+        const slug = this.getFilename(path);
+        this.openStack(slug);
+      }
     },
     openStack(stack_slug, slideIndex) {
       let query = Object.assign({}, this.$route.query) || {};
-      query.stack = stack_slug;
+
+      // Find the stack to get its full path and extract community name
+      const stack = this.all_stacks.find(
+        (s) => this.getFilename(s.$path) === stack_slug
+      );
+
+      if (stack) {
+        // Extract community name from stack path
+        const community = this.getCommunity(stack.$path);
+        if (community) {
+          query.stack = `${community}_${stack_slug}`;
+        } else {
+          query.stack = stack_slug;
+        }
+      } else {
+        query.stack = stack_slug;
+      }
+
       // If a slide index is provided, include it in the URL
       if (slideIndex !== undefined && slideIndex !== null) {
         query.slide = (slideIndex + 1).toString();
@@ -493,6 +545,7 @@ export default {
     closeStack() {
       let query = Object.assign({}, this.$route.query) || {};
       delete query.stack;
+      delete query.slide;
       this.$router.push({ query });
     },
     toggleCorpus(folder_path) {
