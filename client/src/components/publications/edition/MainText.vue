@@ -14,10 +14,11 @@
       <template #custom_buttons>
         <button
           type="button"
-          class="u-button u-button_bleumarine _customBtn"
+          class="u-button u-button_orange"
           @click="show_media_picker = !show_media_picker"
         >
-          {{ $t("import_medias") }}
+          <b-icon icon="image" />
+          {{ $t("import") }}
         </button>
       </template>
     </CollaborativeEditor3>

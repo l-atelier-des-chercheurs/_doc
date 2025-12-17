@@ -942,10 +942,23 @@ export default {
   &::after {
     display: none;
   }
-  button,
+  button:not(.u-button),
   svg {
     display: inherit;
     color: currentColor;
+  }
+
+  .u-button_orange {
+    background-color: var(--c-orange);
+
+    &:hover,
+    &:focus-visible,
+    &.is--active {
+      &:not([disabled]) {
+        background-color: var(--c-orange_fonce);
+        color: white;
+      }
+    }
   }
 
   button,
@@ -1241,10 +1254,10 @@ select.ql-ui {
     justify-content: space-between;
     align-items: center;
 
-    ._editBtn {
-      background-color: var(--c-bleuvert) !important;
-      border-radius: 0 !important;
-    }
+    // ._editBtn {
+    //   background-color: var(--c-bleuvert) !important;
+    //   border-radius: 0 !important;
+    // }
   }
 
   ._markdownHelpBtn {
