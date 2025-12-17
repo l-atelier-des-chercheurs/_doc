@@ -56,39 +56,27 @@
         </div>
       </template>
 
-      <div class="u-spacingBottom" v-else>
-        <hr />
-        {{ $t("multisupport_embed_img_instr") }}
-
-        <ul>
-          <li>
-            <code>(image: https://www.example.com/url-vers-l-image.jpeg) </code>
-          </li>
-          <li>
-            <code>(video: https://www.example.com/url-vers-la-video.mp4) </code>
-          </li>
-          <li>
-            <code
-              >(audio: https://www.example.com/url-vers-la-musique.mp3)
-            </code>
-          </li>
-          <li>
-            <code>(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde) </code>
-          </li>
-          <li>
-            <code>(embed: https://www.youtube.com/watch?v=Bn6zdyCAwJs) </code>
-          </li>
-          <li>
-            <code>(embed: https://scratch.mit.edu/projects/1061783643) </code>
-          </li>
-        </ul>
-      </div>
-
       <DetailsPane
         :header="$t('advanced_options')"
         :icon="'rulers'"
         :has_items="false"
       >
+        <hr />
+        {{ $t("multisupport_embed_img_instr") }}
+
+        <CodeBlock code="(image: https://www.pageweb.com/image.jpeg)" />
+        <CodeBlock code="(video: https://www.pageweb.com/video.mp4)" />
+        <CodeBlock code="(audio: https://www.pageweb.com/audio.mp3)" />
+        <CodeBlock
+          code="(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde)"
+        />
+        <CodeBlock
+          code="(embed: https://www.youtube.com/watch?v=Bn6zdyCAwJs)"
+        />
+        <CodeBlock
+          code="(embed: https://scratch.mit.edu/projects/1061783643)"
+        />
+
         <div class="u-spacingBottom">
           {{ $t("attributes_for_embeds") }}
 
@@ -110,10 +98,9 @@
         <div>
           {{ $t("for_example") }}
           <div>
-            <code
-              >(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption:
-              Voici une vidéo de PeerTube class: maClass)</code
-            >
+            <CodeBlock
+              code="(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption: Voici une vidéo de PeerTube class: maClass)"
+            />
           </div>
         </div>
       </DetailsPane>
@@ -140,11 +127,13 @@
 
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import CodeBlock from "@/adc-core/fields/collaborative-editor/CodeBlock.vue";
 
 export default {
   name: "PickMediaForMarkdown",
   components: {
     MediaPicker,
+    CodeBlock,
   },
   props: {
     publication_path: String,
