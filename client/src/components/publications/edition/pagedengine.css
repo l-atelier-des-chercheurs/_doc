@@ -10,6 +10,44 @@ p:empty {
   margin: 0;
   padding: 0;
 
+  /* Prevent page breaks inside figure to keep media and caption together */
+  break-inside: avoid;
+  page-break-inside: avoid;
+
+  /* When width is specified via CSS variable, use it */
+  &[style*="--media-width"] {
+    width: var(--media-width, 100%);
+    max-width: var(--media-width, 100%);
+    flex: 0 0 var(--media-width, auto);
+  }
+
+  /* When height is specified via CSS variable, use it */
+  &[style*="--media-height"] {
+    height: var(--media-height, auto);
+  }
+
+  /* Ensure images inside respect the container width when explicitly set */
+  &[style*="--media-width"] img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* When image has explicit width via CSS variable, don't constrain it */
+  img[style*="--media-width"] {
+    width: var(--media-width, 100%);
+    max-width: var(--media-width, none);
+  }
+
+  img[style*="--media-height"] {
+    height: var(--media-height, auto);
+  }
+
+  .mediaCaption {
+    break-before: avoid;
+    page-break-before: avoid;
+  }
+
   &._isqrcode {
     display: flex;
     align-items: center;

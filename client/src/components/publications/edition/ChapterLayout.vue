@@ -25,7 +25,7 @@
           <NumberInput
             v-if="['text', 'grid'].includes(chapter.section_type)"
             :label="$t('column_count')"
-            :value="chapter.column_count || 1"
+            :value="chapter.column_count || 6"
             :size="'small'"
             :min="1"
             :max="12"

@@ -281,8 +281,8 @@ Some text in between
     it("should handle width attribute with units like cm", () => {
       const input = "(image: https://example.com/image.jpg width: 1cm)";
       const output = md.render(input);
-      // Should have style attribute with width: 1cm
-      expect(output).toContain('style="width: 1cm;"');
+      // Should have style attribute with CSS variable for width
+      expect(output).toContain('style="--media-width: 1cm"');
     });
 
     it("should handle caption with :) unquoted", () => {
@@ -318,7 +318,7 @@ Some text in between
       const input =
         "(image: https://example.com/image.jpg width: 1cm caption: Test)";
       const output = md.render(input);
-      expect(output).toContain('style="width: 1cm;"');
+      expect(output).toContain('style="--media-width: 1cm"');
       expect(output).toContain(
         '<figcaption class="mediaCaption"><span>Test</span></figcaption>'
       );
@@ -328,7 +328,7 @@ Some text in between
       const input =
         '(image: https://example.com/image.jpg width: 1cm caption: "Text with :)")';
       const output = md.render(input);
-      expect(output).toContain('style="width: 1cm;"');
+      expect(output).toContain('style="--media-width: 1cm"');
       expect(output).toContain("figcaption");
       expect(output).toContain("Text with :)");
     });
@@ -337,7 +337,9 @@ Some text in between
       const input =
         "(image: https://example.com/image.jpg width: 100 height: 200)";
       const output = md.render(input);
-      expect(output).toContain('style="width: 100;height: 200;"');
+      expect(output).toContain(
+        'style="--media-width: 100; --media-height: 200"'
+      );
     });
   });
 });

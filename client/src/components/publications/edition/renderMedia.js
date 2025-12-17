@@ -1,9 +1,10 @@
-// Helper function to build style attribute from width/height
+// Helper function to build style attribute from width/height using CSS variables
 export function buildStyleAttribute(width, height) {
   if (!width && !height) return "";
-  const _width = width ? `width: ${width};` : "";
-  const _height = height ? `height: ${height};` : "";
-  return ` style="${_width}${_height}"`;
+  const vars = [];
+  if (width) vars.push(`--media-width: ${width}`);
+  if (height) vars.push(`--media-height: ${height}`);
+  return vars.length > 0 ? ` style="${vars.join("; ")}"` : "";
 }
 
 /**
@@ -67,8 +68,6 @@ export function renderMedia({
 
   // Handle external URLs (http/https)
   if (meta_src && meta_src.startsWith("http")) {
-    const style_attr = buildStyleAttribute(width, height);
-
     // Detect media type from URL extension
     let media_type = "image"; // default
     const lowerSrc = meta_src.toLowerCase();
@@ -100,7 +99,9 @@ export function renderMedia({
       // For images, style goes on the img tag for external URLs
       // Don't add alt if we're also adding a figcaption with the same text
       const alt_attr = has_caption ? "" : alt ? ` alt="${alt}"` : "";
-      media_html = `<img src="${meta_src}"${alt_attr}${style_attr} />`;
+      // For external URLs, use CSS variables on img tag
+      const img_style_attr = buildStyleAttribute(width, height);
+      media_html = `<img src="${meta_src}"${alt_attr}${img_style_attr} />`;
     }
   } else {
     // Handle local media
