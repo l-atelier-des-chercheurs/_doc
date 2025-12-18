@@ -79,20 +79,12 @@
         <div class="u-spacingBottom">
           {{ $t("attributes_for_embeds") }}
 
-          <ul>
-            <li>
-              <code>caption: Ma légende</code>
-            </li>
-            <li>
-              <code>class: nomDeLaClasse</code>
-            </li>
-            <li>
-              <code>float: left</code>
-            </li>
-            <li>
-              <code>float: right</code>
-            </li>
-          </ul>
+          <CodeBlock code="caption: Ma légende" />
+          <CodeBlock code="class: nomDeLaClasse" />
+          <CodeBlock code="float: left" />
+          <CodeBlock code="float: right" />
+          <CodeBlock code="size: full" />
+          <CodeBlock code="size: full-cover" />
         </div>
         <div>
           {{ $t("for_example") }}

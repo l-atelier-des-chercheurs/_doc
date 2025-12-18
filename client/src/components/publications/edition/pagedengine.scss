@@ -76,34 +76,17 @@
     }
   }
 
-  &._isFullPage {
-    break-before: page;
-    break-after: page;
-    margin: 0;
-    /* complex calculation because otherwise a p is pushed onto the next page */
-    width: var(--pagedjs-width);
-    height: calc(
-      var(--pagedjs-height) - var(--pagedjs-margin-top) -
-        var(--pagedjs-margin-bottom) - 5mm
-    );
-
-    z-index: 1000;
-
+  &.full-page {
     img {
-      position: absolute;
-      top: calc(var(--pagedjs-margin-top) * -1);
-      left: calc(var(--pagedjs-margin-left) * -1);
-      width: var(--pagedjs-width);
-      height: var(--pagedjs-height);
-      object-fit: contain;
-
-      background-color: white;
+      object-fit: scale-down;
+      object-position: center;
+      max-width: none;
     }
-    &._isFullPageCover img {
+    &.full-page-cover img {
       object-fit: cover;
     }
 
-    .mediaCaption {
+    figcaption {
       position: absolute;
       bottom: 0;
       left: calc(var(--pagedjs-margin-left) * -1);
@@ -220,13 +203,15 @@ hr {
 }
 
 .book .grid,
-.book .gallery {
+.book .gallery,
+.book .full-page {
   height: calc(var(--pagedjs-height));
   break-inside: avoid;
 }
 
 .book .gallery-content,
-.book .grid-content {
+.book .grid-content,
+.book .full-page img {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1);
   left: calc(var(--pagedjs-margin-left) * -1);
@@ -234,10 +219,14 @@ hr {
   height: calc(
     var(--pagedjs-height) - 1px
   ); /* -1px permet de régler le petit bug de pagedjs */
-  padding: calc(var(--spacing) * 1) !important;
   overflow: hidden;
 
   page: grid;
+}
+
+.book .gallery-content,
+.book .grid-content {
+  padding: calc(var(--spacing) * 1) !important;
 }
 
 .web .gallery-content {

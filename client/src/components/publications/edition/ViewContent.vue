@@ -421,8 +421,7 @@ export default {
         })
         .filter(Boolean);
 
-      const fullPageClass = this.view_mode === "book" ? " full-page" : "";
-      let html = `<div class="gallery"><div class="gallery-content${fullPageClass}" data-number-of-medias="${medias.length}" >`;
+      let html = `<div class="gallery"><div class="gallery-content" data-number-of-medias="${medias.length}" >`;
 
       medias.forEach((media) => {
         html += `<figure class="media gallery--item">
@@ -494,8 +493,7 @@ export default {
       const col_count = chapter.column_count || 6;
       const row_count = chapter.row_count || 6;
 
-      const fullPageClass = this.view_mode === "book" ? " full-page" : "";
-      let html = `<div class="grid"><div class="grid-content${fullPageClass}" style="--col-count: ${col_count}; --row-count: ${row_count};">`;
+      let html = `<div class="grid"><div class="grid-content" style="--col-count: ${col_count}; --row-count: ${row_count};">`;
 
       chapter.grid_areas.forEach((area) => {
         const text_meta = this.publication.$files.find(
