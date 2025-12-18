@@ -17,6 +17,7 @@ export function buildStyleAttribute(width, height) {
  * @param {string} params.width - Width (supports CSS units like "1cm", "100px", etc.)
  * @param {string} params.height - Height (supports CSS units)
  * @param {string} params.title - Title attribute (supports special formats like "=full-page")
+ * @param {string} params.size - Size attribute (supports "full" or "full-cover")
  * @param {Object} params.context - Context object with helper functions
  * @param {string} params.context.view_mode - View mode ("book" or "html")
  * @param {Function} params.context.getMediaSrc - Function to get media from source
@@ -32,6 +33,7 @@ export function renderMedia({
   width,
   height,
   title,
+  size,
   context = {},
 }) {
   const {
@@ -48,13 +50,25 @@ export function renderMedia({
   // Check if we'll have a caption (to avoid duplicating in alt attribute)
   const has_caption = alt && alt.trim() !== "";
 
+  // Handle size attribute (size: full or size: full-cover)
+  if (size === "full" || size === "full-page") {
+    if (view_mode === "book") {
+      custom_classes.push("full-page");
+    }
+  } else if (size === "full-cover" || size === "full-page-cover") {
+    if (view_mode === "book") {
+      custom_classes.push("full-page");
+      custom_classes.push("full-page-cover");
+    }
+  }
+
   // Handle special title attributes for styling and dimensions
   if (title?.startsWith("=")) {
     if (title.startsWith("=full-page")) {
       if (view_mode === "book") {
-        custom_classes.push("_isFullPage");
+        custom_classes.push("full-page");
         if (title.startsWith("=full-page-cover")) {
-          custom_classes.push("_isFullPageCover");
+          custom_classes.push("full-page-cover");
         }
       }
     } else {

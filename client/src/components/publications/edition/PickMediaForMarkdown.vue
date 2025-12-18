@@ -2,14 +2,13 @@
   <div class="pick-media-for-markdown">
     <BaseModal2 :title="$t('add_media')" @close="closePickModal">
       <div class="u-spacingBottom" v-if="!pick_medias_text">
-        {{ $t("from_project") }}
-        <b-icon icon="arrow-right" />&nbsp;
+        <DLabel :str="$t('from_project')" />
         <button
           type="button"
-          class="u-button u-button_orange"
+          class="u-button u-button_orange _pickMediaBtn"
           @click="show_media_picker = true"
         >
-          <b-icon icon="image" style="font-size: var(--icon-size)" />
+          <b-icon icon="image" />
           {{ $t("import") }}
         </button>
       </div>

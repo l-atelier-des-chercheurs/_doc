@@ -88,7 +88,7 @@ import { renderMedia as renderMediaFunction } from "@/components/publications/ed
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
 import DocViewer from "@/components/publications/edition/DocViewer.vue";
 
-import pagedengine from "@/components/publications/edition/pagedengine.css?raw";
+import pagedengine from "@/components/publications/edition/pagedengine.scss?raw";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
 
 export default {
@@ -381,7 +381,7 @@ export default {
         },
       });
       md.use(markdownItCsc, {
-        renderMedia: ({ meta_src, alt, width, height, title }) =>
+        renderMedia: ({ meta_src, alt, width, height, title, size }) =>
           this.renderMedia({
             meta_src,
             source_medias,
@@ -389,6 +389,7 @@ export default {
             width,
             height,
             title,
+            size,
           }),
         transformURL: (url) => this.transformURL(url),
       });
@@ -420,7 +421,8 @@ export default {
         })
         .filter(Boolean);
 
-      let html = `<div class="gallery"><div class="gallery-content" data-number-of-medias="${medias.length}" >`;
+      const fullPageClass = this.view_mode === "book" ? " full-page" : "";
+      let html = `<div class="gallery"><div class="gallery-content${fullPageClass}" data-number-of-medias="${medias.length}" >`;
 
       medias.forEach((media) => {
         html += `<figure class="media gallery--item">
@@ -492,7 +494,8 @@ export default {
       const col_count = chapter.column_count || 6;
       const row_count = chapter.row_count || 6;
 
-      let html = `<div class="grid"><div class="grid-content" style="--col-count: ${col_count}; --row-count: ${row_count};">`;
+      const fullPageClass = this.view_mode === "book" ? " full-page" : "";
+      let html = `<div class="grid"><div class="grid-content${fullPageClass}" style="--col-count: ${col_count}; --row-count: ${row_count};">`;
 
       chapter.grid_areas.forEach((area) => {
         const text_meta = this.publication.$files.find(
@@ -559,7 +562,16 @@ export default {
 
       return media;
     },
-    renderMedia({ media, meta_src, source_medias, alt, width, height, title }) {
+    renderMedia({
+      media,
+      meta_src,
+      source_medias,
+      alt,
+      width,
+      height,
+      title,
+      size,
+    }) {
       return renderMediaFunction({
         media,
         meta_src,
@@ -568,6 +580,7 @@ export default {
         width,
         height,
         title,
+        size,
         context: {
           view_mode: this.view_mode,
           getMediaSrc: this.getMediaSrc.bind(this),

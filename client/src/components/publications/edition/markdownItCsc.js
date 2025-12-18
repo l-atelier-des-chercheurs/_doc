@@ -302,6 +302,7 @@ export default (md, o = {}) => {
         const width = token.attrs.width || "";
         const height = token.attrs.height || "";
         const title = token.attrs.title || "";
+        const size = token.attrs.size || "";
 
         const { html, is_qr_code } = renderMedia({
           meta_src: token.attrs.src,
@@ -309,6 +310,7 @@ export default (md, o = {}) => {
           width: token.attrs.width,
           height: token.attrs.height,
           title,
+          size,
         });
 
         if (!html || html.includes("Media not found")) {
