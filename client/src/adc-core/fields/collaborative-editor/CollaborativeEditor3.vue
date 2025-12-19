@@ -37,7 +37,7 @@
         @click="show_markdown_help = !show_markdown_help"
       >
         <b-icon icon="patch-question" />
-        <span>{{ $t("markdown_help") }}</span>
+        {{ $t("markdown_help") }}
       </button>
       <MarkdownHelpModal
         v-if="show_markdown_help"
@@ -87,7 +87,7 @@
               @click="show_archives = !show_archives"
             >
               <b-icon icon="archive" />
-              <span>{{ $t("history") }}</span>
+              {{ $t("history") }}
             </button>
           </transition>
           <EditBtn
@@ -943,10 +943,35 @@ export default {
   &::after {
     display: none;
   }
-  button,
+  button:not(.u-button),
   svg {
     display: inherit;
     color: currentColor;
+  }
+
+  .u-button {
+    color: currentColor;
+
+    &:hover,
+    &:focus-visible,
+    &.is--active {
+      &:not([disabled]) {
+        color: black;
+      }
+    }
+  }
+
+  .u-button_orange {
+    color: white;
+    background-color: var(--c-orange);
+
+    &:hover,
+    &:focus-visible,
+    &.is--active {
+      &:not([disabled]) {
+        background-color: var(--c-orange_fonce);
+      }
+    }
   }
 
   button,
@@ -962,7 +987,8 @@ export default {
   ._savingStatus,
   ._savedStatus,
   ._archivesBtn {
-    min-width: 9.5rem;
+    // min-width: 8.5rem;
+    background-color: white;
   }
   ._savedStatus {
     background-color: var(--c-vert);
@@ -1236,16 +1262,20 @@ select.ql-ui {
     border: 2px solid var(--toolbar-bg);
     border-radius: var(--input-border-radius);
     overflow: hidden;
-    background: #fff;
+    // background: #fff;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
 
-    ._editBtn {
-      background-color: var(--c-bleuvert) !important;
-      border-radius: 0 !important;
-    }
+    // ._editBtn {
+    //   background-color: var(--c-bleuvert) !important;
+    //   border-radius: 0 !important;
+    // }
+  }
+
+  ._editBtn {
+    background-color: var(--c-bleuvert);
   }
 
   ._markdownHelpBtn {

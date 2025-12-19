@@ -92,7 +92,8 @@ export default {
       else if (this.btn_type === "check")
         return {
           label: this.$t("save"),
-          icon: "check-lg",
+          icon: "check",
+          icon_size: 1.5,
         };
       else if (this.btn_type === "credits")
         return {

@@ -83,11 +83,12 @@ import LinkAttributes from "markdown-it-link-attributes";
 import hljs from "highlight.js/lib/common";
 
 import { generate } from "lean-qr";
+import { renderMedia as renderMediaFunction } from "@/components/publications/edition/renderMedia.js";
 
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
 import DocViewer from "@/components/publications/edition/DocViewer.vue";
 
-import pagedengine from "@/components/publications/edition/pagedengine.css?raw";
+import pagedengine from "@/components/publications/edition/pagedengine.scss?raw";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
 
 export default {
@@ -239,10 +240,14 @@ export default {
         });
     },
     css_styles() {
-      return `
-      ${pagedengine || ""}
-      ${this.custom_styles_unnested}
-      `;
+      return (
+        // prettier-ignore
+        "/******************************* paged.js engine styles (added by do•doc) *******************************/" +
+        (pagedengine || "") +
+        // prettier-ignore
+        `/******************************* custom styles ${this.opened_style_file_meta || "default"} *******************************/` +
+        (this.custom_styles_unnested || "")
+      );
     },
   },
   methods: {
@@ -322,13 +327,6 @@ export default {
     },
 
     parseMarkdownWithMarkedownIt(content, source_medias) {
-      // Preprocess content to handle multiple line breaks
-      // Convert multiple consecutive newlines to HTML breaks
-      // content = content.replace(/\n{3,}/g, (match) => {
-      //   const breakCount = match.length - 2; // Keep one paragraph break, add extra <br> tags
-      //   return "\n\n" + "<br>\n".repeat(breakCount);
-      // });
-
       const md = markdownit({
         breaks: true,
         linkify: true,
@@ -380,7 +378,7 @@ export default {
         },
       });
       md.use(markdownItCsc, {
-        renderMedia: ({ meta_src, alt, width, height, title }) =>
+        renderMedia: ({ meta_src, alt, width, height, title, size }) =>
           this.renderMedia({
             meta_src,
             source_medias,
@@ -388,6 +386,7 @@ export default {
             width,
             height,
             title,
+            size,
           }),
         transformURL: (url) => this.transformURL(url),
       });
@@ -558,115 +557,32 @@ export default {
 
       return media;
     },
-    renderMedia({ media, meta_src, source_medias, alt, width, height, title }) {
-      let media_html = "";
-      let is_qr_code = false;
-      let custom_classes = ["media"];
-
-      // Handle special title attributes for styling and dimensions
-      if (title?.startsWith("=")) {
-        if (title.startsWith("=full-page")) {
-          if (this.view_mode === "book") {
-            custom_classes.push("_isFullPage");
-            if (title.startsWith("=full-page-cover")) {
-              custom_classes.push("_isFullPageCover");
-            }
-          }
-        } else {
-          [width, height] = title
-            .slice(1)
-            .split("x")
-            .map((v) => v.trim())
-            .filter(Boolean);
-        }
-      }
-
-      // Handle external URLs (http/https)
-      if (meta_src && meta_src.startsWith("http")) {
-        media_html = `
-          <img src="${meta_src}"
-            alt="${alt}"
-            ${width ? ` width="${width}"` : ""}
-            ${height ? ` height="${height}"` : ""}
-          />
-        `;
-      } else {
-        // Handle local media
-        if (!media) {
-          media = this.getMediaSrc(meta_src, source_medias);
-        }
-
-        if (!media)
-          return {
-            html: `<figure class="${custom_classes.join(
-              " "
-            )}"><i>Media not found</i></figure>`,
-            is_qr_code: false,
-          };
-
-        const src = this.makeMediaFileURL({
-          $path: media.$path,
-          $media_filename: media.$media_filename,
-        });
-
-        // if (!width && !height) {
-        //   width = media.$infos.width + "px";
-        //   height = media.$infos.height;
-        // }
-
-        if (media.$type === "text") {
-          media_html = media.$content;
-        } else if (media.$type === "image") {
-          media_html = `
-            <img src="${src}"
-              alt="${alt}"
-            />
-          `;
-        } else {
-          if (this.view_mode === "book") {
-            is_qr_code = true;
-            custom_classes.push("_isqrcode");
-            media_html = this.makeQREmbedForQR({
-              alt,
-              width,
-              height,
-              media,
-            });
-          } else {
-            if (media.$type === "video") {
-              media_html = `
-                <video src="${src}" controls
-                  alt="${alt}"
-                />
-              `;
-            } else if (media.$type === "audio") {
-              media_html = `
-                <audio src="${src}" controls
-                  alt="${alt}"
-                />
-              `;
-            }
-          }
-        }
-      }
-
-      // Add caption if alt text is provided
-      if (alt) {
-        media_html += `<figcaption class="mediaCaption"><span>${alt}</span></figcaption>`;
-      }
-
-      let style_attr = "";
-      if (width || height) {
-        const _width = width ? `width: ${width};` : "";
-        const _height = height ? `height: ${height};` : "";
-        style_attr = ` style="${_width}${_height}"`;
-      }
-
-      const html = `<figure class="${custom_classes.join(
-        " "
-      )}"${style_attr}>${media_html}</figure>`;
-
-      return { html, is_qr_code };
+    renderMedia({
+      media,
+      meta_src,
+      source_medias,
+      alt,
+      width,
+      height,
+      title,
+      size,
+    }) {
+      return renderMediaFunction({
+        media,
+        meta_src,
+        source_medias,
+        alt,
+        width,
+        height,
+        title,
+        size,
+        context: {
+          view_mode: this.view_mode,
+          getMediaSrc: this.getMediaSrc.bind(this),
+          makeMediaFileURL: this.makeMediaFileURL.bind(this),
+          makeQREmbedForQR: this.makeQREmbedForQR.bind(this),
+        },
+      });
     },
     makeQREmbedForQR({ alt, width, height, media }) {
       const url =

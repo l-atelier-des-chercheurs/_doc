@@ -2,14 +2,13 @@
   <div class="pick-media-for-markdown">
     <BaseModal2 :title="$t('add_media')" @close="closePickModal">
       <div class="u-spacingBottom" v-if="!pick_medias_text">
-        {{ $t("from_project") }}
-        <b-icon icon="arrow-right" />&nbsp;
+        <DLabel :str="$t('from_project')" />
         <button
           type="button"
-          class="u-button u-button_orange"
+          class="u-button u-button_orange _pickMediaBtn"
           @click="show_media_picker = true"
         >
-          <b-icon icon="image" style="font-size: var(--icon-size)" />
+          <b-icon icon="image" />
           {{ $t("import") }}
         </button>
       </div>
@@ -56,64 +55,73 @@
         </div>
       </template>
 
-      <div class="u-spacingBottom" v-else>
-        <hr />
-        {{ $t("multisupport_embed_img_instr") }}
-
-        <ul>
-          <li>
-            <code>(image: https://www.example.com/url-vers-l-image.jpeg) </code>
-          </li>
-          <li>
-            <code>(video: https://www.example.com/url-vers-la-video.mp4) </code>
-          </li>
-          <li>
-            <code
-              >(audio: https://www.example.com/url-vers-la-musique.mp3)
-            </code>
-          </li>
-          <li>
-            <code>(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde) </code>
-          </li>
-          <li>
-            <code>(embed: https://www.youtube.com/watch?v=Bn6zdyCAwJs) </code>
-          </li>
-          <li>
-            <code>(embed: https://scratch.mit.edu/projects/1061783643) </code>
-          </li>
-        </ul>
-      </div>
-
       <DetailsPane
         :header="$t('advanced_options')"
         :icon="'rulers'"
         :has_items="false"
       >
+        <hr />
+        {{ $t("multisupport_embed_img_instr") }}
+
+        <CodeBlock
+          code="(image: https://www.pageweb.com/image.jpeg)"
+          :explanation="$t('embed_example_image')"
+        />
+        <CodeBlock
+          code="(video: https://www.pageweb.com/video.mp4)"
+          :explanation="$t('embed_example_video')"
+        />
+        <CodeBlock
+          code="(audio: https://www.pageweb.com/audio.mp3)"
+          :explanation="$t('embed_example_audio')"
+        />
+        <CodeBlock
+          code="(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde)"
+          :explanation="$t('embed_example_peertube')"
+        />
+        <CodeBlock
+          code="(embed: https://www.youtube.com/watch?v=Bn6zdyCAwJs)"
+          :explanation="$t('embed_example_youtube')"
+        />
+        <CodeBlock
+          code="(embed: https://scratch.mit.edu/projects/1061783643)"
+          :explanation="$t('embed_example_scratch')"
+        />
+
         <div class="u-spacingBottom">
           {{ $t("attributes_for_embeds") }}
 
-          <ul>
-            <li>
-              <code>caption: Ma légende</code>
-            </li>
-            <li>
-              <code>class: nomDeLaClasse</code>
-            </li>
-            <li>
-              <code>float: left</code>
-            </li>
-            <li>
-              <code>float: right</code>
-            </li>
-          </ul>
+          <CodeBlock
+            code="caption: Ma légende"
+            :explanation="$t('embed_attr_caption')"
+          />
+          <CodeBlock
+            code="class: nomDeLaClasse"
+            :explanation="$t('embed_attr_class')"
+          />
+          <CodeBlock
+            code="float: left"
+            :explanation="$t('embed_attr_float_left')"
+          />
+          <CodeBlock
+            code="float: right"
+            :explanation="$t('embed_attr_float_right')"
+          />
+          <CodeBlock
+            code="size: full"
+            :explanation="$t('embed_attr_size_full')"
+          />
+          <CodeBlock
+            code="size: full-cover"
+            :explanation="$t('embed_attr_size_full_cover')"
+          />
         </div>
         <div>
           {{ $t("for_example") }}
           <div>
-            <code
-              >(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption:
-              Voici une vidéo de PeerTube class: maClass)</code
-            >
+            <CodeBlock
+              code="(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption: Voici une vidéo de PeerTube class: maClass)"
+            />
           </div>
         </div>
       </DetailsPane>
@@ -140,11 +148,13 @@
 
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import CodeBlock from "@/adc-core/fields/collaborative-editor/CodeBlock.vue";
 
 export default {
   name: "PickMediaForMarkdown",
   components: {
     MediaPicker,
+    CodeBlock,
   },
   props: {
     publication_path: String,
@@ -224,7 +234,7 @@ export default {
             media_html += ` caption: ${md_caption}`;
         }
 
-        media_html += ")";
+        media_html += ")\n";
         html.push(media_html);
       });
 

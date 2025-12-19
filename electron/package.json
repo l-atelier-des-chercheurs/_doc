@@ -26,8 +26,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@electron/rebuild": "^4.0.1",
-    "electron": "^39.2.6",
+    "@electron/rebuild": "^4.0.2",
+    "electron": "39.2.7",
     "electron-builder": "^26.0.12",
     "electronmon": "^2.0.4"
   }

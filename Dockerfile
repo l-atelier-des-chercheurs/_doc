@@ -21,6 +21,7 @@ ENV NODE_ENV=production
 # Install server dependencies
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
 COPY package*.json ./
+COPY scripts/ ./scripts/
 RUN npm ci --only=production
 
 # == Serving ==
@@ -39,6 +40,8 @@ EXPOSE 8080
 USER node
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
 
+# Configure Data Folder
+RUN mkdir -p /home/node/Documents/dodoc; chown -R node:node /home/node/Documents/dodoc
 COPY . .
 COPY --from=build-server /src/l-atelier-des-chercheurs/dodoc/node_modules node_modules
 
