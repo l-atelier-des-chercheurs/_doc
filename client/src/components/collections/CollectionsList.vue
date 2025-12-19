@@ -1,10 +1,11 @@
 <template>
-  <TwoColumnLayout :show-sidebar.sync="show_create_bar">
+  <TwoColumnLayout :show-toggle-button="false">
     <template #sidebar>
       <div class="_sidebarContent">
         <h3 class="_dashboard--label">{{ $t("publications") }}</h3>
         <div class="u-spacingBottom" />
         <div class="u-instructions u-spacingBottom">
+          <b-icon icon="info-circle" />
           {{ $t("publication_instr") }}
         </div>
 
@@ -146,7 +147,6 @@ export default {
   data() {
     return {
       settings: undefined,
-      show_create_bar: false,
       is_loading: true,
       show_create_collection: false,
       collections: [],

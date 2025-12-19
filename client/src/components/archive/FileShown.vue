@@ -13,7 +13,7 @@
             :content="file.$content"
             :custom_formats="['bold', 'italic', 'underline', 'link']"
             :can_edit="can_edit"
-            :edit_on_mounted="context === 'chutier'"
+            :mode="context === 'chutier' ? 'edit_on_mounted' : 'normal'"
           />
         </div>
         <MediaContent

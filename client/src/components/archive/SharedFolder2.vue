@@ -37,6 +37,7 @@
             :author_path_filter.sync="author_path_filter"
             :available_keywords="valid_keywords"
             :keywords_filter.sync="keywords_filter"
+            @close="show_filter_bar = false"
           >
           </FilterBar>
         </template>

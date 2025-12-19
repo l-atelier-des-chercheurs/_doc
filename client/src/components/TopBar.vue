@@ -1,7 +1,7 @@
 <template>
   <div class="_topBar" :class="{ 'is--mobileView': $root.is_mobile_view }">
     <div class="_logoIcons">
-      <router-link to="/" class="_logo">_doc</router-link>
+      <router-link to="/" class="_logo">/doc</router-link>
     </div>
     <button
       v-if="$root.is_mobile_view"
