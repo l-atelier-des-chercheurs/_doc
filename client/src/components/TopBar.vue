@@ -663,7 +663,7 @@ export default {
 }
 
 ._mobileActions button:hover {
-  background-color: var(--c-gray);
+  background-color: var(--h-200);
 }
 
 ._mobileCurrentUser {
@@ -689,7 +689,7 @@ export default {
 }
 
 ._mobileAuthorBtn:hover {
-  background-color: var(--c-gray);
+  background-color: var(--h-200);
 }
 
 ._hamburgerBtn {
